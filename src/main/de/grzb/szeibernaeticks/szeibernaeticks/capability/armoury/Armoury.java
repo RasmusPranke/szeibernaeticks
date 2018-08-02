@@ -15,12 +15,16 @@ import net.minecraftforge.common.MinecraftForge;
 public class Armoury implements IArmouryCapability {
 
     private Entity entityAttachedTo;
-    ConcurrentHashMap<BodyPart, ISzeibernaetickCapability> bodyMap;
-    ConcurrentHashMap<Class<? extends ISzeibernaetickCapability>, ISzeibernaetickCapability> itemMap;
+    protected ConcurrentHashMap<BodyPart, ISzeibernaetickCapability> bodyMap;
+    protected ConcurrentHashMap<Class<? extends ISzeibernaetickCapability>, ISzeibernaetickCapability> itemMap;
+
+    public Armoury() {
+        this.bodyMap = new ConcurrentHashMap<>();
+        this.itemMap = new ConcurrentHashMap<>();
+    }
 
     public Armoury(Entity entity) {
-        this.bodyMap = new ConcurrentHashMap<BodyPart, ISzeibernaetickCapability>();
-        this.itemMap = new ConcurrentHashMap<Class<? extends ISzeibernaetickCapability>, ISzeibernaetickCapability>();
+        this();
         this.entityAttachedTo = entity;
     }
 

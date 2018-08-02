@@ -22,9 +22,7 @@ public class SlotBodyPart extends SlotItemHandler {
         ISzeibernaetickCapability capability = stack.getCapability(CapabilityProvider.SZEIBER_CAP, null);
 
         if(super.isItemValid(stack) && capability != null) {
-            if(capability.getBodyPart().equals(this.bodyPart)) {
-                return true;
-            }
+            return capability.getBodyPart().equals(this.bodyPart);
         }
 
         return false;

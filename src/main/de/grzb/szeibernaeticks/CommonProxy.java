@@ -62,8 +62,7 @@ public class CommonProxy {
         GameRegistry.registerWorldGenerator(new ModWorldGenerator(), 0);
         NetworkRegistry.INSTANCE.registerGuiHandler(Szeibernaeticks.instance, new GuiProxy());
 
-        // TODO: Change third parameter from implementation to factory
-        CapabilityManager.INSTANCE.register(IArmouryCapability.class, new ArmouryCapabilityStorage(), Armoury.class);
+        CapabilityManager.INSTANCE.register(IArmouryCapability.class, new ArmouryCapabilityStorage(), Armoury::new);
         CapabilityManager.INSTANCE.register(ISzeibernaetickCapability.class, new CapabilityStorage(), MetalBonesCapability::new);
     }
 

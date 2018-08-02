@@ -31,7 +31,7 @@ public interface IEnergyStorer {
      *
      * @ensure amount >= 0
      *
-     * @param amountToStore
+     * @param amountToRetrieve
      *            How much should be retrieved.
      * @return The amount actually retrieved.
      */
