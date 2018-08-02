@@ -1,6 +1,5 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.capability;
 
-import main.de.grzb.szeibernaeticks.item.szeibernaetick.ItemMetalBones;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import net.minecraft.nbt.NBTTagCompound;
 
