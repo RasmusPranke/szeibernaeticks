@@ -35,8 +35,8 @@ public class SzeibernaetickMapper {
     public void register(Class<? extends ISzeibernaetickCapability> cap, SzeibernaetickBase item) {
         Log.log("Trying to register Capability!", LogType.DEBUG, LogType.SETUP);
         if(this.itemMap.put(cap, item) != null) {
-            Log.log("Overrode Szeibernaetick Item Mapping for " + item.getUnlocalizedName() + "/" + cap.toString()
-                    + "! This should not happen. Did you try to register different items for the same Capability?",
+            Log.log("Overrode Szeibernaetick Item Mapping for " + item.getRegistryName() + "/" + cap.toString()
+                            + "! This should not happen. Did you try to register different items for the same Capability?",
                     LogType.SETUP, LogType.ERROR);
         }
 
@@ -44,8 +44,8 @@ public class SzeibernaetickMapper {
             String identifier = cap.newInstance().getIdentifier();
             Log.log("Registering Capability!", LogType.INFO, LogType.SETUP);
             if(this.idMap.put(identifier, cap) != null) {
-                Log.log("Overrode Szeibernaetick Capability Mapping for " + item.getUnlocalizedName() + "/" + identifier
-                        + "! This should not happen. Did you register 2 Capabilities with identical Identifiers?",
+                Log.log("Overrode Szeibernaetick Capability Mapping for " + item.getRegistryName() + "/" + identifier
+                                + "! This should not happen. Did you register 2 Capabilities with identical Identifiers?",
                         LogType.SETUP, LogType.ERROR);
             }
         }

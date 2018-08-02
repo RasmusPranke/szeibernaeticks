@@ -19,7 +19,8 @@ public abstract class BlockBase extends Block {
         super(material);
 
         this.name = name;
-        this.setUnlocalizedName(name);
+        // deleted method
+        // this.setUnlocalizedName(name);
         this.setRegistryName(Szeibernaeticks.RESOURCE_PREFIX + name);
     }
 

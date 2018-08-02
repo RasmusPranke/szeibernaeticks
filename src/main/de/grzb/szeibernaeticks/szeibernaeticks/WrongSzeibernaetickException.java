@@ -19,7 +19,7 @@ public class WrongSzeibernaetickException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "Expected: " + this.expected.getUnlocalizedName() + ", but got: " + this.received.getUnlocalizedName();
+        return "Expected: " + this.expected.getRegistryName() + ", but got: " + this.received.getRegistryName();
     }
 
 }

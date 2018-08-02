@@ -15,7 +15,8 @@ public class ItemBase extends Item {
 
     public ItemBase(String name) {
         this.name = name;
-        this.setUnlocalizedName(name);
+        // deleted method
+        // this.setUnlocalizedName(name);
         this.setRegistryName(Szeibernaeticks.RESOURCE_PREFIX + name);
     }
 

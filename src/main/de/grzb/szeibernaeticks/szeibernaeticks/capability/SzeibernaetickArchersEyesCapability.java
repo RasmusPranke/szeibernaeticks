@@ -97,7 +97,7 @@ public class SzeibernaetickArchersEyesCapability implements ISzeibernaetickCapab
                 }
 
                 EntityArrowFake entityarrow = new EntityArrowFake(e.getEntity().world, e.getEntityLiving());
-                entityarrow.setAim(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, force * 3.0F, 1.0F);
+                entityarrow.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, force * 3.0F, 1.0F);
                 e.getEntity().world.spawnEntity(entityarrow);
             }
         }

@@ -11,7 +11,7 @@ public abstract class BlockTileEntityBase extends BlockBase implements ITileEnti
 
     public BlockTileEntityBase(String name, Material material) {
         super(name, material);
-        this.isBlockContainer = true;
+        this.hasTileEntity = true;
     }
 
     @Override
