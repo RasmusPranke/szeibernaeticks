@@ -1,8 +1,8 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.event;
 
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.GeneratorStomachCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.GeneratorStomach;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmouryCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
 import net.minecraft.item.ItemFood;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -14,9 +14,9 @@ public class GeneratorStomachHandler implements ISzeibernaetickEventHandler {
         if(event.getItem().getItem() instanceof ItemFood) {
             ItemFood food = (ItemFood) event.getItem().getItem();
 
-            IArmouryCapability armoury = event.getEntity().getCapability(ArmouryProvider.ARMOURY_CAP, null);
+            IArmoury armoury = event.getEntity().getCapability(ArmouryProvider.ARMOURY_CAP, null);
             if(armoury != null) {
-                GeneratorStomachCapability genStomach = (GeneratorStomachCapability) armoury.getSzeibernaetick(GeneratorStomachCapability.class);
+                GeneratorStomach genStomach = (GeneratorStomach) armoury.getSzeibernaetick(GeneratorStomach.class);
                 if(genStomach != null) {
                     int totalGeneration = (int) ((food.getHealAmount(event.getItem()) + food.getSaturationModifier(event.getItem())) / 2);
                     genStomach.produce(totalGeneration, event.getEntity());

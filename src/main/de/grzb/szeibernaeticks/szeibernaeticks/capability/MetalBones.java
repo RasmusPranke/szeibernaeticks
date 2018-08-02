@@ -9,16 +9,16 @@ import net.minecraft.nbt.NBTTagCompound;
  *
  * @author DemRat
  */
-public class MetalBonesCapability implements ISzeibernaetickCapability {
+public class MetalBones implements ISzeibernaetick {
 
     private int damage;
 
     @Override
     public String getIdentifier() {
-        return "MetalBonesCapability";
+        return "MetalBones";
     }
 
-    public MetalBonesCapability() {
+    public MetalBones() {
         this.damage = 0;
     }
 

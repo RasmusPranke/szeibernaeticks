@@ -6,26 +6,26 @@ import java.util.concurrent.ConcurrentHashMap;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetickCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SzeibernaetickInstalledEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SzeibernaetickRemovedEvent;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 
-public class Armoury implements IArmouryCapability {
+public class Armoury implements IArmoury {
 
     private Entity entityAttachedTo;
-    ConcurrentHashMap<BodyPart, ISzeibernaetickCapability> bodyMap;
-    ConcurrentHashMap<Class<? extends ISzeibernaetickCapability>, ISzeibernaetickCapability> itemMap;
+    ConcurrentHashMap<BodyPart, ISzeibernaetick> bodyMap;
+    ConcurrentHashMap<Class<? extends ISzeibernaetick>, ISzeibernaetick> itemMap;
 
     public Armoury(Entity entity) {
-        this.bodyMap = new ConcurrentHashMap<BodyPart, ISzeibernaetickCapability>();
-        this.itemMap = new ConcurrentHashMap<Class<? extends ISzeibernaetickCapability>, ISzeibernaetickCapability>();
+        this.bodyMap = new ConcurrentHashMap<BodyPart, ISzeibernaetick>();
+        this.itemMap = new ConcurrentHashMap<Class<? extends ISzeibernaetick>, ISzeibernaetick>();
         this.entityAttachedTo = entity;
     }
 
     @Override
-    public boolean addSzeibernaetick(ISzeibernaetickCapability szeiber) {
+    public boolean addSzeibernaetick(ISzeibernaetick szeiber) {
         Log.log("Attempting to add " + szeiber.getIdentifier(), LogType.DEBUG, LogType.SZEIBER_ARM);
         Log.log("BodyPart is: " + szeiber.getBodyPart().toString(), LogType.DEBUG, LogType.SZEIBER_ARM,
                 LogType.SPECIFIC);
@@ -44,18 +44,18 @@ public class Armoury implements IArmouryCapability {
     }
 
     @Override
-    public ISzeibernaetickCapability getSzeibernaetick(Class<? extends ISzeibernaetickCapability> szeiberClass) {
+    public ISzeibernaetick getSzeibernaetick(Class<? extends ISzeibernaetick> szeiberClass) {
         return this.itemMap.get(szeiberClass);
     }
 
     @Override
-    public Collection<ISzeibernaetickCapability> getSzeibernaeticks() {
+    public Collection<ISzeibernaetick> getSzeibernaeticks() {
         return this.bodyMap.values();
     }
 
     @Override
-    public ISzeibernaetickCapability removeSzeibernaetick(ISzeibernaetickCapability szeiber) {
-        Class<? extends ISzeibernaetickCapability> szeibernaetickClass = szeiber.getClass();
+    public ISzeibernaetick removeSzeibernaetick(ISzeibernaetick szeiber) {
+        Class<? extends ISzeibernaetick> szeibernaetickClass = szeiber.getClass();
         if(this.itemMap.get(szeibernaetickClass) != null) {
             MinecraftForge.EVENT_BUS.post(new SzeibernaetickRemovedEvent(this, szeiber));
             this.itemMap.remove(szeibernaetickClass);
@@ -66,7 +66,7 @@ public class Armoury implements IArmouryCapability {
     }
 
     @Override
-    public ISzeibernaetickCapability getBodyPart(BodyPart b) {
+    public ISzeibernaetick getBodyPart(BodyPart b) {
         return this.bodyMap.get(b);
     }
 

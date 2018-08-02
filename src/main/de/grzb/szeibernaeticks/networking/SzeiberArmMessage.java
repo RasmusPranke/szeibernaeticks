@@ -1,27 +1,27 @@
 package main.de.grzb.szeibernaeticks.networking;
 
 import io.netty.buffer.ByteBuf;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmouryCapability;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryCapabilityStorage;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryStorage;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
 
 public class SzeiberArmMessage extends NBTMessage {
 
-    private IArmouryCapability arm;
+    private IArmoury arm;
 
-    public SzeiberArmMessage(IArmouryCapability arm) {
+    public SzeiberArmMessage(IArmoury arm) {
         this.arm = arm;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        ArmouryCapabilityStorage armStore = new ArmouryCapabilityStorage();
+        ArmouryStorage armStore = new ArmouryStorage();
         armStore.readNBT(ArmouryProvider.ARMOURY_CAP, this.arm, null, this.readTag(buf));
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        ArmouryCapabilityStorage armStore = new ArmouryCapabilityStorage();
+        ArmouryStorage armStore = new ArmouryStorage();
         this.writeTag(buf, armStore.writeNBT(ArmouryProvider.ARMOURY_CAP, this.arm, null));
     }
 
@@ -33,7 +33,7 @@ public class SzeiberArmMessage extends NBTMessage {
      * MessageContext ctx) { // Get the correct PlayerEntity final
      * EntityPlayerMP serverPlayer = ctx.getServerHandler().playerEntity;
      *
-     * // Retrieve data from the message final IArmouryCapability
+     * // Retrieve data from the message final IArmoury
      * arm = message.arm;
      *
      * // Find out which side this is on and set the listener to schedule // the
@@ -59,7 +59,7 @@ public class SzeiberArmMessage extends NBTMessage {
      *
      * cap.fromNBT(comp);
      *
-     * IArmouryCapability armoury = serverPlayer
+     * IArmoury armoury = serverPlayer
      * .getCapability(ArmouryProvider.ARMOURY_CAP, null);
      * armoury.addSzeibernaetick(cap); } });
      *

@@ -11,15 +11,15 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyProducer;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class ConductiveVeinsCapability implements ISzeibernaetickCapability {
+public class ConductiveVeins implements ISzeibernaetick {
 
     private ConcurrentSet<IEnergyProducer> producers = new ConcurrentSet<IEnergyProducer>();
     private ConcurrentSet<IEnergyConsumer> consumers = new ConcurrentSet<IEnergyConsumer>();
 
-    public ConductiveVeinsCapability() {
+    public ConductiveVeins() {
     }
 
-    public void register(ISzeibernaetickCapability szeiber) {
+    public void register(ISzeibernaetick szeiber) {
         Log.log("Adding " + szeiber.getIdentifier() + " to the Energy Network.", LogType.DEBUG, LogType.SZEIBER_HANDLER,
                 LogType.SZEIBER_ENERGY);
         if(szeiber instanceof IEnergyProducer) {
@@ -35,7 +35,7 @@ public class ConductiveVeinsCapability implements ISzeibernaetickCapability {
         }
     }
 
-    public void unregister(ISzeibernaetickCapability szeiber) {
+    public void unregister(ISzeibernaetick szeiber) {
         Log.log("Removing " + szeiber.getIdentifier() + " from the Energy Network.", LogType.DEBUG,
                 LogType.SZEIBER_HANDLER, LogType.SZEIBER_ENERGY);
 

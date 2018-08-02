@@ -5,10 +5,10 @@ import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.item.ItemBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetickCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.CapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmouryCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.ISzeibernaetickEventHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -34,9 +34,9 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
  */
 public class SzeibernaetickBase extends ItemBase {
 
-    private Class<? extends ISzeibernaetickCapability> capabilityClass;
+    private Class<? extends ISzeibernaetick> capabilityClass;
 
-    public SzeibernaetickBase(String name, Class<? extends ISzeibernaetickCapability> capability, Class<? extends ISzeibernaetickEventHandler> handler) {
+    public SzeibernaetickBase(String name, Class<? extends ISzeibernaetick> capability, Class<? extends ISzeibernaetickEventHandler> handler) {
         super(name);
         Log.log("Creating Item of type: " + this.getClass(), LogType.DEBUG, LogType.INSTANTIATION, LogType.ITEM);
 
@@ -64,7 +64,7 @@ public class SzeibernaetickBase extends ItemBase {
         if(thisStack.getItem().equals(this)) {
             Log.log("Correct Item!", LogType.ITEM, LogType.DEBUG, LogType.SPECIFIC);
 
-            IArmouryCapability szeiberArm = playerIn.getCapability(ArmouryProvider.ARMOURY_CAP, null);
+            IArmoury szeiberArm = playerIn.getCapability(ArmouryProvider.ARMOURY_CAP, null);
             Log.log("Armoury is: " + szeiberArm, LogType.ITEM, LogType.SZEIBER_ARM, LogType.DEBUG, LogType.SPECIFIC);
             // Add the ItemStack to it.
             if(szeiberArm != null && szeiberArm.addSzeibernaetick(this.getCapabilityInstance())) {
@@ -77,15 +77,15 @@ public class SzeibernaetickBase extends ItemBase {
     }
 
     /**
-     * Returns a new instance of the ISzeibernaetickCapability corresponding to
+     * Returns a new instance of the ISzeibernaetick corresponding to
      * this ISzeibernaetick.
      *
-     * @return A new instance of the correct ISzeibernaetickCapability.
+     * @return A new instance of the correct ISzeibernaetick.
      */
-    public ISzeibernaetickCapability getCapabilityInstance() {
+    public ISzeibernaetick getCapabilityInstance() {
         Log.log("Attempting to instantiate " + this.getClass() + "'s Capability.", LogType.ITEM, LogType.SZEIBER_CAP, LogType.DEBUG);
         try {
-            ISzeibernaetickCapability capability = this.capabilityClass.newInstance();
+            ISzeibernaetick capability = this.capabilityClass.newInstance();
             Log.log("Successfully instantiated capability: " + capability, LogType.ITEM, LogType.SZEIBER_CAP, LogType.DEBUG);
             return capability;
         }

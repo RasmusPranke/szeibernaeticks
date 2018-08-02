@@ -2,9 +2,9 @@ package main.de.grzb.szeibernaeticks.szeibernaeticks.event;
 
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.SzeibernaetickArchersEyesCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ArchersEyes;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmouryCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
@@ -21,12 +21,12 @@ public class SzeibernaetickArchersEyesHandler implements ISzeibernaetickEventHan
             Log.log("[ArchEyesHandler] Is Bow!", LogType.DEBUG, LogType.SPAMMY, LogType.SZEIBER_HANDLER);
 
             EntityLivingBase shooter = e.getEntityLiving();
-            IArmouryCapability armoury = shooter.getCapability(ArmouryProvider.ARMOURY_CAP, null);
+            IArmoury armoury = shooter.getCapability(ArmouryProvider.ARMOURY_CAP, null);
 
             if(armoury != null) {
                 Log.log("[ArchEyesHandler] Found Armory!", LogType.DEBUG, LogType.SPAMMY, LogType.SZEIBER_HANDLER);
-                SzeibernaetickArchersEyesCapability eyes = (SzeibernaetickArchersEyesCapability) armoury
-                        .getSzeibernaetick(SzeibernaetickArchersEyesCapability.class);
+                ArchersEyes eyes = (ArchersEyes) armoury
+                        .getSzeibernaetick(ArchersEyes.class);
 
                 if(eyes != null) {
                     Log.log("[ArchEyesHandler] Found Eyes!", LogType.DEBUG, LogType.SPAMMY, LogType.SZEIBER_HANDLER);

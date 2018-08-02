@@ -1,6 +1,6 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.energy.feedback;
 
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetickCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetick;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
@@ -8,9 +8,9 @@ import net.minecraft.util.text.TextComponentTranslation;
 
 public class EnergyFeedbackDamage extends DamageSource {
 
-    private ISzeibernaetickCapability szeiber;
+    private ISzeibernaetick szeiber;
 
-    public EnergyFeedbackDamage(ISzeibernaetickCapability szeiberCause) {
+    public EnergyFeedbackDamage(ISzeibernaetick szeiberCause) {
         super("energyFeedback");
         this.setDamageBypassesArmor();
         this.szeiber = szeiberCause;

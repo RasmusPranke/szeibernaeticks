@@ -6,11 +6,11 @@ import main.de.grzb.szeibernaeticks.item.szeibernaetick.ItemConductiveVeins;
 import main.de.grzb.szeibernaeticks.item.szeibernaetick.ItemDynamoJoints;
 import main.de.grzb.szeibernaeticks.item.szeibernaetick.ItemMetalBones;
 import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.GeneratorStomachCapability;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.RunnersLegsCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.GeneratorStomach;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.RunnersLegs;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.SyntheticEyesCapability;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.SzeibernaetickArchersEyesCapability;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.SzeibernaetickRadarEyesCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ArchersEyes;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.RadarEyes;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.GeneratorStomachHandler;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.RunnersLegsHandler;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SyntheticEyesHandler;
@@ -62,10 +62,10 @@ public final class ModItems {
         conductive_veins = register(new ItemConductiveVeins("conductive_veins"));
         dynamo_joints = register(new ItemDynamoJoints("dynamo_joints"));
         synthetic_eyes = register(new SzeibernaetickBase("synthetic_eyes", SyntheticEyesCapability.class, SyntheticEyesHandler.class));
-        generator_stomach = register(new SzeibernaetickBase("generator_stomach", GeneratorStomachCapability.class, GeneratorStomachHandler.class));
-        archers_eyes = register(new SzeibernaetickBase("archers_eyes", SzeibernaetickArchersEyesCapability.class, SzeibernaetickArchersEyesHandler.class));
-        radar_eyes = register(new SzeibernaetickBase("radar_eyes", SzeibernaetickRadarEyesCapability.class, SzeibernaetickRadarEyesHandler.class));
-        runners_legs = register(new SzeibernaetickBase("runners_legs", RunnersLegsCapability.class, RunnersLegsHandler.class));
+        generator_stomach = register(new SzeibernaetickBase("generator_stomach", GeneratorStomach.class, GeneratorStomachHandler.class));
+        archers_eyes = register(new SzeibernaetickBase("archers_eyes", ArchersEyes.class, SzeibernaetickArchersEyesHandler.class));
+        radar_eyes = register(new SzeibernaetickBase("radar_eyes", RadarEyes.class, SzeibernaetickRadarEyesHandler.class));
+        runners_legs = register(new SzeibernaetickBase("runners_legs", RunnersLegs.class, RunnersLegsHandler.class));
     }
 
     private static <T extends Item> T register(T item) {

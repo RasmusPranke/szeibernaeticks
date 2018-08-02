@@ -14,7 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent.Tick;
 
-public class SzeibernaetickArchersEyesCapability implements ISzeibernaetickCapability, IEnergyConsumer {
+public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
     private int maxStorage = 20;
     private int storage = 0;
     private int consumption = 1;

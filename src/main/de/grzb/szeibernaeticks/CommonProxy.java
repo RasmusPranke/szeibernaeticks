@@ -10,11 +10,11 @@ import main.de.grzb.szeibernaeticks.networking.NetworkWrapper;
 import main.de.grzb.szeibernaeticks.networking.SzeiberCapMessage;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.CapabilityAttacher;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.CapabilityStorage;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetickCapability;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.MetalBonesCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.MetalBones;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.Armoury;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryCapabilityStorage;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmouryCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryStorage;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.entity.EntityBlockMarker;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.overlay.EnergyOverlay;
 import main.de.grzb.szeibernaeticks.tileentity.ModTileEntities;
@@ -63,8 +63,8 @@ public class CommonProxy {
         NetworkRegistry.INSTANCE.registerGuiHandler(Szeibernaeticks.instance, new GuiProxy());
 
         // TODO: Change third parameter from implementation to factory
-        CapabilityManager.INSTANCE.register(IArmouryCapability.class, new ArmouryCapabilityStorage(), Armoury.class);
-        CapabilityManager.INSTANCE.register(ISzeibernaetickCapability.class, new CapabilityStorage(), MetalBonesCapability::new);
+        CapabilityManager.INSTANCE.register(IArmoury.class, new ArmouryStorage(), Armoury.class);
+        CapabilityManager.INSTANCE.register(ISzeibernaetick.class, new CapabilityStorage(), MetalBones::new);
     }
 
     public void postInit(FMLPostInitializationEvent e) {

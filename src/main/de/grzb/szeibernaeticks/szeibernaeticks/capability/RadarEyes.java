@@ -12,7 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
-public class SzeibernaetickRadarEyesCapability implements ISzeibernaetickCapability, IEnergyConsumer {
+public class RadarEyes implements ISzeibernaetick, IEnergyConsumer {
     private int maxStorage = 20;
     private int storage = 0;
     private int consumption = 1;

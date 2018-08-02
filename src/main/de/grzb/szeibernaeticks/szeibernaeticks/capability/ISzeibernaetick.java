@@ -38,7 +38,7 @@ import net.minecraft.nbt.NBTTagCompound;
  *
  * @author DemRat
  */
-public interface ISzeibernaetickCapability {
+public interface ISzeibernaetick {
 
     /**
      * Returns an unique Identifier for this capability _class_, not instance.

@@ -4,7 +4,7 @@ import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.SyntheticEyesCapability;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmouryCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -18,7 +18,7 @@ public class SyntheticEyesHandler implements ISzeibernaetickEventHandler {
 
     @SubscribeEvent
     public void onLivingUpdateEvent(LivingUpdateEvent e) {
-        IArmouryCapability armoury = e.getEntity().getCapability(ArmouryProvider.ARMOURY_CAP, null);
+        IArmoury armoury = e.getEntity().getCapability(ArmouryProvider.ARMOURY_CAP, null);
 
         if(armoury != null) {
             SyntheticEyesCapability eyes = (SyntheticEyesCapability) armoury.getSzeibernaetick(SyntheticEyesCapability.class);
