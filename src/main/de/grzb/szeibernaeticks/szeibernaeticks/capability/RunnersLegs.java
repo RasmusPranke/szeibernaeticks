@@ -8,7 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 
-public class RunnersLegsCapability implements ISzeibernaetickCapability, IEnergyConsumer {
+public class RunnersLegs implements ISzeibernaetick, IEnergyConsumer {
 
     private int maxStorage = 20;
     private int storage = 0;

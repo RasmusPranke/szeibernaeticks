@@ -1,8 +1,8 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.event;
 
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.RunnersLegsCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.RunnersLegs;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmouryCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -15,10 +15,10 @@ public class RunnersLegsHandler implements ISzeibernaetickEventHandler {
 
     @SubscribeEvent
     public void onLivingUpdateEvent(LivingUpdateEvent e) {
-        IArmouryCapability armoury = e.getEntity().getCapability(ArmouryProvider.ARMOURY_CAP, null);
+        IArmoury armoury = e.getEntity().getCapability(ArmouryProvider.ARMOURY_CAP, null);
 
         if(armoury != null) {
-            RunnersLegsCapability legs = (RunnersLegsCapability) armoury.getSzeibernaetick(RunnersLegsCapability.class);
+            RunnersLegs legs = (RunnersLegs) armoury.getSzeibernaetick(RunnersLegs.class);
 
             if(legs != null) {
                 PotionEffect effect = e.getEntityLiving().getActivePotionEffect(szeiberEffect);

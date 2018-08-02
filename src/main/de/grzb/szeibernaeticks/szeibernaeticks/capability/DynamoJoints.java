@@ -12,7 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 
-public class DynamoJointsCapability implements ISzeibernaetickCapability, IEnergyConsumer, IEnergyProducer {
+public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyProducer {
 
     private int maxStorage;
     private int storage;

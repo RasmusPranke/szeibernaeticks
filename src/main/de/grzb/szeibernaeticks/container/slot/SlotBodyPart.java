@@ -3,7 +3,7 @@ package main.de.grzb.szeibernaeticks.container.slot;
 import javax.annotation.Nonnull;
 
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetickCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.CapabilityProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -19,7 +19,7 @@ public class SlotBodyPart extends SlotItemHandler {
 
     @Override
     public boolean isItemValid(@Nonnull ItemStack stack) {
-        ISzeibernaetickCapability capability = stack.getCapability(CapabilityProvider.SZEIBER_CAP, null);
+        ISzeibernaetick capability = stack.getCapability(CapabilityProvider.SZEIBER_CAP, null);
 
         if(super.isItemValid(stack) && capability != null) {
             return capability.getBodyPart().equals(this.bodyPart);

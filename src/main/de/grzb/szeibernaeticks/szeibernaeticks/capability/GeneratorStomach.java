@@ -12,14 +12,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 
-public class GeneratorStomachCapability implements ISzeibernaetickCapability, IEnergyProducer, IEnergyConsumer {
+public class GeneratorStomach implements ISzeibernaetick, IEnergyProducer, IEnergyConsumer {
 
     private int storage;
     private int maxStorage;
 
     @Override
     public String getIdentifier() {
-        return "GeneratorStomachCapability";
+        return "GeneratorStomach";
     }
 
     @Override

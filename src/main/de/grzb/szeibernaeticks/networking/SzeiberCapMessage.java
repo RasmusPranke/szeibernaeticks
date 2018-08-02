@@ -4,9 +4,9 @@ import io.netty.buffer.ByteBuf;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetickCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmouryCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IThreadListener;
@@ -22,7 +22,7 @@ public class SzeiberCapMessage extends NBTMessage {
 
     public SzeiberCapMessage() {}
 
-    public SzeiberCapMessage(ISzeibernaetickCapability capability) {
+    public SzeiberCapMessage(ISzeibernaetick capability) {
         this.capTag = capability.toNBT();
         this.identifier = capability.getIdentifier();
     }
@@ -67,7 +67,7 @@ public class SzeiberCapMessage extends NBTMessage {
 
                 @Override
                 public void run() {
-                    ISzeibernaetickCapability cap;
+                    ISzeibernaetick cap;
                     try {
                         cap = SzeibernaetickMapper.instance.getCapabilityFromIdentifier(identifier).newInstance();
                     }
@@ -92,9 +92,9 @@ public class SzeiberCapMessage extends NBTMessage {
 
                     cap.fromNBT(comp);
 
-                    Capability<IArmouryCapability> prov = ArmouryProvider.ARMOURY_CAP;
+                    Capability<IArmoury> prov = ArmouryProvider.ARMOURY_CAP;
 
-                    IArmouryCapability armoury = Minecraft.getMinecraft().player.getCapability(prov, null);
+                    IArmoury armoury = Minecraft.getMinecraft().player.getCapability(prov, null);
                     armoury.addSzeibernaetick(cap);
                 }
             });

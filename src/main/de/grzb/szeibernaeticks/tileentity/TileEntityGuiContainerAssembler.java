@@ -9,7 +9,7 @@ import main.de.grzb.szeibernaeticks.container.layout.SlotBodyPartDefinition;
 import main.de.grzb.szeibernaeticks.container.slot.SlotType;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetickCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,7 +35,7 @@ public class TileEntityGuiContainerAssembler extends TileEntityGuiContainerBase 
 
     @Override
     public GuiContainerBase getContainer(EntityPlayer player) {
-        Collection<ISzeibernaetickCapability> szeibernaeticks = player.getCapability(ArmouryProvider.ARMOURY_CAP, null).getSzeibernaeticks();
+        Collection<ISzeibernaetick> szeibernaeticks = player.getCapability(ArmouryProvider.ARMOURY_CAP, null).getSzeibernaeticks();
         int width = 162;
         int height = 118;
 
@@ -54,7 +54,7 @@ public class TileEntityGuiContainerAssembler extends TileEntityGuiContainerBase 
             }
 
             ItemStack itemStack = ItemStack.EMPTY;
-            for(ISzeibernaetickCapability capability : szeibernaeticks) {
+            for(ISzeibernaetick capability : szeibernaeticks) {
                 if(bodyPart.equals(capability.getBodyPart())) {
                     itemStack = new ItemStack(SzeibernaetickMapper.instance.getItemFromIdentifier(capability.getIdentifier()));
                 }

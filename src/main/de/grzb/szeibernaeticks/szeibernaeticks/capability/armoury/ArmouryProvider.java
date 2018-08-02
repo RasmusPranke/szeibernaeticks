@@ -14,10 +14,10 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
  */
 public class ArmouryProvider implements ICapabilitySerializable<NBTBase> {
 
-    @CapabilityInject(IArmouryCapability.class)
-    public static final Capability<IArmouryCapability> ARMOURY_CAP = null;
+    @CapabilityInject(IArmoury.class)
+    public static final Capability<IArmoury> ARMOURY_CAP = null;
 
-    private IArmouryCapability instance;
+    private IArmoury instance;
     private Entity attachedTo;
 
     public ArmouryProvider(Entity attachedTo) {

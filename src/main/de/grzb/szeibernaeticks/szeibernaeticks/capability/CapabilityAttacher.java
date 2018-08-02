@@ -38,7 +38,7 @@ public class CapabilityAttacher {
     public void attachToJoining(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
         if(entity instanceof EntityPlayerMP && entity.hasCapability(ArmouryProvider.ARMOURY_CAP, null)) {
-            for(ISzeibernaetickCapability szeiber : entity.getCapability(ArmouryProvider.ARMOURY_CAP, null).getSzeibernaeticks()) {
+            for(ISzeibernaetick szeiber : entity.getCapability(ArmouryProvider.ARMOURY_CAP, null).getSzeibernaeticks()) {
                 NetworkWrapper.INSTANCE.sendToAll(new SzeiberCapMessage(szeiber));
             }
         }

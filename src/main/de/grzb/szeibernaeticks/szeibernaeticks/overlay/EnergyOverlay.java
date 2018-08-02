@@ -1,8 +1,8 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.overlay;
 
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ConductiveVeinsCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ConductiveVeins;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmouryCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -14,11 +14,11 @@ public class EnergyOverlay {
 
     private class ActualOverlay extends Gui {
         public ActualOverlay(Minecraft mc) {
-            IArmouryCapability armoury = mc.player.getCapability(ArmouryProvider.ARMOURY_CAP, null);
+            IArmoury armoury = mc.player.getCapability(ArmouryProvider.ARMOURY_CAP, null);
 
             if(armoury != null) {
-                ConductiveVeinsCapability veins = (ConductiveVeinsCapability) armoury
-                        .getSzeibernaetick(ConductiveVeinsCapability.class);
+                ConductiveVeins veins = (ConductiveVeins) armoury
+                        .getSzeibernaetick(ConductiveVeins.class);
                 if(veins != null) {
                     int cEnergy = veins.getCurrentEnergy();
                     int mEnergy = veins.getMaxEnergy();

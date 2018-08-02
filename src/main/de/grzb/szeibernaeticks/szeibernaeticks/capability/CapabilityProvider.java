@@ -7,12 +7,12 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class CapabilityProvider implements ICapabilityProvider {
 
-    @CapabilityInject(ISzeibernaetickCapability.class)
-    public static final Capability<ISzeibernaetickCapability> SZEIBER_CAP = null;
+    @CapabilityInject(ISzeibernaetick.class)
+    public static final Capability<ISzeibernaetick> SZEIBER_CAP = null;
 
-    private ISzeibernaetickCapability instance;
+    private ISzeibernaetick instance;
 
-    public CapabilityProvider(ISzeibernaetickCapability iSzeibernaetickCapability) {
+    public CapabilityProvider(ISzeibernaetick iSzeibernaetickCapability) {
         this.instance = iSzeibernaetickCapability;
     }
 
@@ -24,7 +24,7 @@ public class CapabilityProvider implements ICapabilityProvider {
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         // Test whether the Capability<T> is the existing and injected
-        // Capability<ISzeibernaetickCapability> of which there is only one
+        // Capability<ISzeibernaetick> of which there is only one
         if(capability.equals(SZEIBER_CAP)) {
             // If it is, return the instance
             return SZEIBER_CAP.cast(this.instance);

@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetickCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetick;
 
 /**
  * Maps the identifiers of Capabilities to the Capability classes as well as
@@ -17,12 +17,12 @@ public class SzeibernaetickMapper {
 
     public static final SzeibernaetickMapper instance = new SzeibernaetickMapper();
 
-    private ConcurrentHashMap<Class<? extends ISzeibernaetickCapability>, SzeibernaetickBase> itemMap;
-    private ConcurrentHashMap<String, Class<? extends ISzeibernaetickCapability>> idMap;
+    private ConcurrentHashMap<Class<? extends ISzeibernaetick>, SzeibernaetickBase> itemMap;
+    private ConcurrentHashMap<String, Class<? extends ISzeibernaetick>> idMap;
 
     private SzeibernaetickMapper() {
-        this.itemMap = new ConcurrentHashMap<Class<? extends ISzeibernaetickCapability>, SzeibernaetickBase>();
-        this.idMap = new ConcurrentHashMap<String, Class<? extends ISzeibernaetickCapability>>();
+        this.itemMap = new ConcurrentHashMap<Class<? extends ISzeibernaetick>, SzeibernaetickBase>();
+        this.idMap = new ConcurrentHashMap<String, Class<? extends ISzeibernaetick>>();
     }
 
     /**
@@ -32,7 +32,7 @@ public class SzeibernaetickMapper {
      * @param cap
      * @param item
      */
-    public void register(Class<? extends ISzeibernaetickCapability> cap, SzeibernaetickBase item) {
+    public void register(Class<? extends ISzeibernaetick> cap, SzeibernaetickBase item) {
         Log.log("Trying to register Capability!", LogType.DEBUG, LogType.SETUP);
         if(this.itemMap.put(cap, item) != null) {
             Log.log("Overrode Szeibernaetick Item Mapping for " + item.getRegistryName() + "/" + cap.toString()
@@ -57,7 +57,7 @@ public class SzeibernaetickMapper {
         }
     }
 
-    public SzeibernaetickBase getItemFromCapability(Class<? extends ISzeibernaetickCapability> capability) {
+    public SzeibernaetickBase getItemFromCapability(Class<? extends ISzeibernaetick> capability) {
         return this.itemMap.get(capability);
     }
 
@@ -65,7 +65,7 @@ public class SzeibernaetickMapper {
         return this.getItemFromCapability(this.idMap.get(identifier));
     }
 
-    public Class<? extends ISzeibernaetickCapability> getCapabilityFromIdentifier(String identifier) {
+    public Class<? extends ISzeibernaetick> getCapabilityFromIdentifier(String identifier) {
         Log.log("Capability class was requested. Do I have it? Its name is " + identifier + " :"
                 + (this.idMap.get(identifier) != null), LogType.SPECIFIC, LogType.DEBUG);
         return this.idMap.get(identifier);
