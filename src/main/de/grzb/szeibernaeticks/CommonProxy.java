@@ -10,8 +10,8 @@ import main.de.grzb.szeibernaeticks.networking.NetworkWrapper;
 import main.de.grzb.szeibernaeticks.networking.SzeiberCapMessage;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.CapabilityAttacher;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.CapabilityStorage;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.DummyDefault;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetick;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.MetalBones;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.Armoury;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryStorage;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
@@ -48,13 +48,16 @@ public class CommonProxy {
         ModBlocks.init();
         ModTileEntities.init();
 
-        NetworkWrapper.INSTANCE.registerMessage(SzeiberCapMessage.SzeiberCapMessageHandler.class, SzeiberCapMessage.class, NetworkWrapper.getId(), Side.CLIENT);
-        NetworkWrapper.INSTANCE.registerMessage(GuiMessage.GuiMessageHandler.class, GuiMessage.class, NetworkWrapper.getId(), Side.SERVER);
+        NetworkWrapper.INSTANCE.registerMessage(SzeiberCapMessage.SzeiberCapMessageHandler.class,
+                SzeiberCapMessage.class, NetworkWrapper.getId(), Side.CLIENT);
+        NetworkWrapper.INSTANCE.registerMessage(GuiMessage.GuiMessageHandler.class, GuiMessage.class,
+                NetworkWrapper.getId(), Side.SERVER);
 
         MinecraftForge.EVENT_BUS.register(new CapabilityAttacher());
 
         // TODO: Change this, maybe put somewhere else
-        EntityRegistry.registerModEntity(new ResourceLocation(Szeibernaeticks.RESOURCE_PREFIX + "block_marker"), EntityBlockMarker.class, "block_marker", 0, Szeibernaeticks.instance, 20, 3, false);
+        EntityRegistry.registerModEntity(new ResourceLocation(Szeibernaeticks.RESOURCE_PREFIX + "block_marker"),
+                EntityBlockMarker.class, "block_marker", 0, Szeibernaeticks.instance, 20, 3, false);
     }
 
     public void init(FMLInitializationEvent e) {
@@ -64,7 +67,7 @@ public class CommonProxy {
 
         // TODO: Change third parameter from implementation to factory
         CapabilityManager.INSTANCE.register(IArmoury.class, new ArmouryStorage(), Armoury.class);
-        CapabilityManager.INSTANCE.register(ISzeibernaetick.class, new CapabilityStorage(), MetalBones::new);
+        CapabilityManager.INSTANCE.register(ISzeibernaetick.class, new CapabilityStorage(), DummyDefault::new);
     }
 
     public void postInit(FMLPostInitializationEvent e) {
