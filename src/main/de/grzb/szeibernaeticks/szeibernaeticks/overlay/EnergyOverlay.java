@@ -17,15 +17,14 @@ public class EnergyOverlay {
             IArmoury armoury = mc.player.getCapability(ArmouryProvider.ARMOURY_CAP, null);
 
             if(armoury != null) {
-                ConductiveVeins veins = (ConductiveVeins) armoury
-                        .getSzeibernaetick(ConductiveVeins.class);
+                ConductiveVeins veins = (ConductiveVeins) armoury.getSzeibernaetick(ConductiveVeins.class);
                 if(veins != null) {
                     int cEnergy = veins.getCurrentEnergy();
                     int mEnergy = veins.getMaxEnergy();
 
                     ScaledResolution scaled = new ScaledResolution(mc);
                     int width = scaled.getScaledWidth();
-                    int height = scaled.getScaledHeight();
+                    // int height = scaled.getScaledHeight();
 
                     drawCenteredString(mc.fontRenderer, cEnergy + "/" + mEnergy, width / 2, 0,
                             Integer.parseInt("FFAA00", 16));
@@ -39,6 +38,7 @@ public class EnergyOverlay {
     public void onRenderGui(RenderGameOverlayEvent.Post event) {
         Minecraft mc = Minecraft.getMinecraft();
 
+        // Draw when the experience bar is drawn.
         if(event.getType() == ElementType.EXPERIENCE) {
             ActualOverlay overlay = new ActualOverlay(mc);
         }

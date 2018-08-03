@@ -7,16 +7,15 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyProducer;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.feedback.EnergyFeedbackDamage;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 
 public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyProducer {
 
-    private int maxStorage;
-    private int storage;
-    private float fractionalStorage;
+    private int maxStorage = 100;
+    private int storage = 0;
+    private float fractionalStorage = 0;
 
     @Override
     public String getIdentifier() {
@@ -110,6 +109,7 @@ public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyPr
      * @return The amount of energy produced.
      */
     public int produce(float height, Entity entity) {
+        Log.log("Maximum storage: " + maxStorage, LogType.TEMP);
         this.fractionalStorage += height / 4;
         int energyProduced = 0;
         if(this.fractionalStorage > 0) {
@@ -121,9 +121,6 @@ public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyPr
         EnergyProductionEvent production = new EnergyProductionEvent(entity, energyProduced);
         MinecraftForge.EVENT_BUS.post(production);
 
-        if(production.getRemainingAmount() > 0) {
-            entity.attackEntityFrom(new EnergyFeedbackDamage(this), production.getRemainingAmount());
-        }
         return energyProduced;
     }
 

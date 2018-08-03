@@ -54,6 +54,7 @@ public class CommonProxy {
                 NetworkWrapper.getId(), Side.SERVER);
 
         MinecraftForge.EVENT_BUS.register(new CapabilityAttacher());
+        MinecraftForge.EVENT_BUS.register(new LogType.DebugConfig());
 
         // TODO: Change this, maybe put somewhere else
         EntityRegistry.registerModEntity(new ResourceLocation(Szeibernaeticks.RESOURCE_PREFIX + "block_marker"),

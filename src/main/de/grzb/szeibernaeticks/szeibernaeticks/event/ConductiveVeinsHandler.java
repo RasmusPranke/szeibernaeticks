@@ -24,6 +24,8 @@ public class ConductiveVeinsHandler implements ISzeibernaetickEventHandler {
             ConductiveVeins veins = (ConductiveVeins) e.installedSzeibernaetick;
             // Register all other Szeibernaeticks to these veins.
             for(ISzeibernaetick szeiber : e.armoury.getSzeibernaeticks()) {
+                Log.log("[ConVeinsHandler] Adding existing szeibernaeticks!", LogType.DEBUG, LogType.SZEIBER_ENERGY,
+                        LogType.SPECIFIC);
                 veins.register(szeiber);
             }
         }
@@ -69,8 +71,7 @@ public class ConductiveVeinsHandler implements ISzeibernaetickEventHandler {
         Log.log("[ConVeinsHandler] An EnergyConsumptionEvent happened", LogType.DEBUG, LogType.SZEIBER_ENERGY,
                 LogType.SZEIBER_HANDLER, LogType.SPAMMY);
         IArmoury armoury = e.getEntity().getCapability(ArmouryProvider.ARMOURY_CAP, null);
-        ConductiveVeins veins = (ConductiveVeins) armoury
-                .getSzeibernaetick(ConductiveVeins.class);
+        ConductiveVeins veins = (ConductiveVeins) armoury.getSzeibernaetick(ConductiveVeins.class);
         if(veins != null) {
             Log.log("[ConVeinsHandler] An EnergyConsumptionEvent is being handled.", LogType.DEBUG,
                     LogType.SZEIBER_ENERGY, LogType.SZEIBER_HANDLER, LogType.SPAMMY);
@@ -83,8 +84,7 @@ public class ConductiveVeinsHandler implements ISzeibernaetickEventHandler {
         Log.log("[ConVeinsHandler] An EnergyProductionEvent happened", LogType.DEBUG, LogType.SZEIBER_ENERGY,
                 LogType.SZEIBER_HANDLER, LogType.SPAMMY);
         IArmoury armoury = e.getEntity().getCapability(ArmouryProvider.ARMOURY_CAP, null);
-        ConductiveVeins veins = (ConductiveVeins) armoury
-                .getSzeibernaetick(ConductiveVeins.class);
+        ConductiveVeins veins = (ConductiveVeins) armoury.getSzeibernaetick(ConductiveVeins.class);
         if(veins != null) {
             Log.log("[ConVeinsHandler] An EnergyProductionEvent is being handled.", LogType.DEBUG,
                     LogType.SZEIBER_ENERGY, LogType.SZEIBER_HANDLER, LogType.SPAMMY);

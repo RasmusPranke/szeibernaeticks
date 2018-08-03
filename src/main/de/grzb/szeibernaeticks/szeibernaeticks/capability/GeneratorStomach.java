@@ -7,7 +7,6 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyProducer;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.feedback.EnergyFeedbackDamage;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
@@ -93,9 +92,6 @@ public class GeneratorStomach implements ISzeibernaetick, IEnergyProducer, IEner
         EnergyProductionEvent production = new EnergyProductionEvent(entity, energyProduced);
         MinecraftForge.EVENT_BUS.post(production);
 
-        if(production.getRemainingAmount() > 0) {
-            entity.attackEntityFrom(new EnergyFeedbackDamage(this), production.getRemainingAmount());
-        }
         return energyProduced;
     }
 

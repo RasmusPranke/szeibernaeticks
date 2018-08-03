@@ -1,7 +1,5 @@
 package main.de.grzb.szeibernaeticks.control;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.logging.log4j.Logger;
 
 public class Log {
@@ -28,14 +26,6 @@ public class Log {
 
     private Logger forgeLogger;
 
-    private ConcurrentHashMap<LogType, Boolean> typeMap = new ConcurrentHashMap<LogType, Boolean>();
-
-    {
-        for(LogType t : LogType.values()) {
-            this.typeMap.put(t, t.defaultEnabled());
-        }
-    }
-
     /**
      * Logs the given message if all given types are enabled.
      *
@@ -46,13 +36,17 @@ public class Log {
         boolean log = true;
         boolean isError = false;
 
-        for(LogType t : types) {
-            log = log && this.typeMap.get(t);
-            if(t == LogType.ERROR) {
-                isError = true;
+        try {
+            for(LogType t : types) {
+                log = log && t.enabled();
+                if(t == LogType.ERROR) {
+                    isError = true;
+                }
             }
         }
-
+        catch(Exception e) {
+            this.forgeLogger.info(e.getMessage());
+        }
         if(log) {
             if(!isError) {
                 this.forgeLogger.info(message);
@@ -63,27 +57,19 @@ public class Log {
         }
     }
 
-    /**
+    /*
      * Enables the given LogTypes.
      *
-     * @param types
+     * @param types public void enable(LogType... types) { for(LogType t :
+     * types) { this.typeMap.put(t, Boolean.TRUE); } }
      */
-    public void enable(LogType... types) {
-        for(LogType t : types) {
-            this.typeMap.put(t, Boolean.TRUE);
-        }
-    }
 
-    /**
+    /*
      * Disables the given LogTypes.
      *
-     * @param types
+     * @param types public void disable(LogType... types) { for(LogType t :
+     * types) { this.typeMap.put(t, Boolean.FALSE); } }
      */
-    public void disable(LogType... types) {
-        for(LogType t : types) {
-            this.typeMap.put(t, Boolean.FALSE);
-        }
-    }
 
     /**
      * Called once during PreInit to set the logger.
@@ -101,15 +87,5 @@ public class Log {
      */
     public static void logThrowable(Throwable t) {
         logger.forgeLogger.catching(t);
-    }
-
-    /**
-     * Returns whether the given LogType is currently enabled to be logged.
-     *
-     * @param type
-     * @return
-     */
-    public boolean isEnabled(LogType type) {
-        return this.typeMap.get(type);
     }
 }
