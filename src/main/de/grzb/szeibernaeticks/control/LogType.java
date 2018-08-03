@@ -79,7 +79,11 @@ public enum LogType {
     /**
      * Information concerning rendering.
      */
-    RENDER(DebugConfig.RENDER_ENABLED);
+    RENDER(DebugConfig.RENDER_ENABLED),
+    /**
+     * Temporary debug messages.
+     */
+    TEMP(new Boolean(true));
 
     private Boolean isEnabled;
 

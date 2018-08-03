@@ -16,7 +16,7 @@ public class DynamoJointsHandler implements ISzeibernaetickEventHandler {
         if(armoury != null) {
             DynamoJoints dynamo = (DynamoJoints) armoury.getSzeibernaetick(DynamoJoints.class);
             if(dynamo != null) {
-                Log.log("Entity with dynamo Fell! Dynamo Joints ENGAGE!", LogType.DEBUG, LogType.SZEIBER_HANDLER, LogType.SPAMMY);
+                Log.log("Entity with dynamo Fell!", LogType.DEBUG, LogType.SZEIBER_HANDLER, LogType.SPAMMY);
 
                 float height = e.getDistance();
                 dynamo.produce(height, e.getEntity());

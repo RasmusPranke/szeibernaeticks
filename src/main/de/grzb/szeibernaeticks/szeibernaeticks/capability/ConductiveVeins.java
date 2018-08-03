@@ -1,5 +1,8 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.capability;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import io.netty.util.internal.ConcurrentSet;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
@@ -9,6 +12,7 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyProducer;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyStorer;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class ConductiveVeins implements ISzeibernaetick {
@@ -146,6 +150,17 @@ public class ConductiveVeins implements ISzeibernaetick {
     }
 
     /**
+     * Returns a collection containing all registered IEnergyStorers.
+     */
+    public Collection<IEnergyStorer> getEnergyStorers() {
+        HashSet<IEnergyStorer> storers = new HashSet<>();
+        storers.addAll(consumers);
+        storers.addAll(producers);
+
+        return storers;
+    }
+
+    /**
      * Returns the amount of energy currently existing within all
      * Szeibernaeticks attached to these veins.
      *
@@ -154,12 +169,8 @@ public class ConductiveVeins implements ISzeibernaetick {
     public int getCurrentEnergy() {
         int total = 0;
 
-        for(IEnergyConsumer c : consumers) {
-            total += c.getCurrentEnergy();
-        }
-
-        for(IEnergyProducer p : producers) {
-            total += p.getCurrentEnergy();
+        for(IEnergyStorer s : getEnergyStorers()) {
+            total += s.getCurrentEnergy();
         }
 
         return total;
@@ -174,15 +185,10 @@ public class ConductiveVeins implements ISzeibernaetick {
     public int getMaxEnergy() {
         int total = 0;
 
-        for(IEnergyConsumer c : consumers) {
-            total += c.getMaxEnergy();
-        }
-
-        for(IEnergyProducer p : producers) {
-            total += p.getMaxEnergy();
+        for(IEnergyStorer s : getEnergyStorers()) {
+            total += s.getMaxEnergy();
         }
 
         return total;
-
     }
 }
