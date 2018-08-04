@@ -2,7 +2,7 @@ package main.de.grzb.szeibernaeticks.szeibernaeticks.event;
 
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.SyntheticEyesCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.SyntheticEyes;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
 import net.minecraft.init.MobEffects;
@@ -21,7 +21,7 @@ public class SyntheticEyesHandler implements ISzeibernaetickEventHandler {
         IArmoury armoury = e.getEntity().getCapability(ArmouryProvider.ARMOURY_CAP, null);
 
         if(armoury != null) {
-            SyntheticEyesCapability eyes = (SyntheticEyesCapability) armoury.getSzeibernaetick(SyntheticEyesCapability.class);
+            SyntheticEyes eyes = (SyntheticEyes) armoury.getSzeibernaetick(SyntheticEyes.class);
 
             if(eyes != null) {
                 Log.log("[SynthEyesHandler] Eyes installed.", LogType.DEBUG, LogType.SZEIBER_HANDLER, LogType.SPAMMY);

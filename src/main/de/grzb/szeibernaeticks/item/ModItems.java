@@ -10,7 +10,7 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.GeneratorStomach;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.MetalBones;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.RadarEyes;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.RunnersLegs;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.SyntheticEyesCapability;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.SyntheticEyes;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.ConductiveVeinsHandler;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.DynamoJointsHandler;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.GeneratorStomachHandler;
@@ -50,7 +50,7 @@ public final class ModItems {
         register(new SzeibernaetickBase("metal_bones", MetalBones.class, MetalBonesHandler.class));
         register(new SzeibernaetickBase("conductive_veins", ConductiveVeins.class, ConductiveVeinsHandler.class));
         register(new SzeibernaetickBase("dynamo_joints", DynamoJoints.class, DynamoJointsHandler.class));
-        register(new SzeibernaetickBase("synthetic_eyes", SyntheticEyesCapability.class, SyntheticEyesHandler.class));
+        register(new SzeibernaetickBase("synthetic_eyes", SyntheticEyes.class, SyntheticEyesHandler.class));
         register(new SzeibernaetickBase("generator_stomach", GeneratorStomach.class, GeneratorStomachHandler.class));
         register(new SzeibernaetickBase("archers_eyes", ArchersEyes.class, SzeibernaetickArchersEyesHandler.class));
         register(new SzeibernaetickBase("radar_eyes", RadarEyes.class, SzeibernaetickRadarEyesHandler.class));
