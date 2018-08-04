@@ -10,7 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 
-public class SyntheticEyesCapability implements ISzeibernaetick, IEnergyConsumer {
+public class SyntheticEyes implements ISzeibernaetick, IEnergyConsumer {
 
     private int maxStorage = 20;
     private int storage = 0;
