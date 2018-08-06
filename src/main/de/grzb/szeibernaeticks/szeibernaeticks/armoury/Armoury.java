@@ -1,4 +1,4 @@
-package main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury;
+package main.de.grzb.szeibernaeticks.szeibernaeticks.armoury;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SzeibernaetickInstalledEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SzeibernaetickRemovedEvent;
 import net.minecraft.entity.Entity;

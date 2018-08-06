@@ -5,7 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetick;
 
 /**
  * Maps the identifiers of Capabilities to the Capability classes as well as

@@ -1,10 +1,9 @@
-package main.de.grzb.szeibernaeticks.szeibernaeticks.capability;
+package main.de.grzb.szeibernaeticks.szeibernaeticks;
 
 import main.de.grzb.szeibernaeticks.Szeibernaeticks;
-import main.de.grzb.szeibernaeticks.networking.SzeiberCapMessage;
 import main.de.grzb.szeibernaeticks.networking.NetworkWrapper;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SzeibernaetickInstalledEvent;
+import main.de.grzb.szeibernaeticks.networking.SzeiberCapMessage;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -19,12 +18,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  *
  * @author DemRat
  */
-public class CapabilityAttacher {
+public class ArmouryAttacher {
 
     /**
      * Attaches ISzeibernaetickStorage to entities.
      *
-     * @param event The event prompting to attach the Capability.
+     * @param event
+     *            The event prompting to attach the Capability.
      */
     @SubscribeEvent
     public void attachToLiving(AttachCapabilitiesEvent<Entity> event) {
@@ -38,17 +38,10 @@ public class CapabilityAttacher {
     public void attachToJoining(EntityJoinWorldEvent event) {
         Entity entity = event.getEntity();
         if(entity instanceof EntityPlayerMP && entity.hasCapability(ArmouryProvider.ARMOURY_CAP, null)) {
-            for(ISzeibernaetick szeiber : entity.getCapability(ArmouryProvider.ARMOURY_CAP, null).getSzeibernaeticks()) {
+            for(ISzeibernaetick szeiber : entity.getCapability(ArmouryProvider.ARMOURY_CAP, null)
+                    .getSzeibernaeticks()) {
                 NetworkWrapper.INSTANCE.sendToAll(new SzeiberCapMessage(szeiber));
             }
         }
     }
-
-    @SubscribeEvent
-    public void onSzeibernaetickInstalled(SzeibernaetickInstalledEvent event) {
-        if(!event.armoury.getEntity().world.isRemote) {
-            NetworkWrapper.INSTANCE.sendToAll(new SzeiberCapMessage(event.installedSzeibernaetick));
-        }
-    }
-
 }

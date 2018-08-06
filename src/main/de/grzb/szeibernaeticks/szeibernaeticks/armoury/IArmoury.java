@@ -1,9 +1,9 @@
-package main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury;
+package main.de.grzb.szeibernaeticks.szeibernaeticks.armoury;
 
 import java.util.Collection;
 
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import net.minecraft.entity.Entity;
 
 /**

@@ -1,8 +1,8 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.event;
 
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.GeneratorStomach;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.IArmoury;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.GeneratorStomach;
 import net.minecraft.item.ItemFood;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

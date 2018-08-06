@@ -1,18 +1,18 @@
-package main.de.grzb.szeibernaeticks.szeibernaeticks.capability;
+package main.de.grzb.szeibernaeticks.szeibernaeticks;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class CapabilityProvider implements ICapabilityProvider {
+public class SzeibernaetickCapabilityProvider implements ICapabilityProvider {
 
     @CapabilityInject(ISzeibernaetick.class)
     public static final Capability<ISzeibernaetick> SZEIBER_CAP = null;
 
     private ISzeibernaetick instance;
 
-    public CapabilityProvider(ISzeibernaetick iSzeibernaetickCapability) {
+    public SzeibernaetickCapabilityProvider(ISzeibernaetick iSzeibernaetickCapability) {
         this.instance = iSzeibernaetickCapability;
     }
 

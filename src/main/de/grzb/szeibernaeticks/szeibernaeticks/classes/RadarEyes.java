@@ -1,24 +1,24 @@
-package main.de.grzb.szeibernaeticks.szeibernaeticks.capability;
+package main.de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.entity.EntityArrowFake;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemStack;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent.Tick;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
-public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
+public class RadarEyes implements ISzeibernaetick, IEnergyConsumer {
     private int maxStorage = 20;
     private int storage = 0;
     private int consumption = 1;
     private int ticksRemaining = 0;
+    private boolean active = false;
 
     {
         Log.log("Creating instance of " + this.getClass(), LogType.SZEIBER_CAP, LogType.DEBUG, LogType.INSTANTIATION);
@@ -26,7 +26,7 @@ public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
 
     @Override
     public String getIdentifier() {
-        return "ArchEyes";
+        return "RadEyes";
     }
 
     @Override
@@ -52,53 +52,48 @@ public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
         return BodyPart.EYES;
     }
 
-    public void grantVision(Tick e) {
-        Log.log("[ArchEyesCap] ArchEyes attempting to grant vision!", LogType.DEBUG, LogType.SZEIBER_CAP,
+    public void grantVision(LivingUpdateEvent e) {
+        Log.log("[RadEyesCap] ArchEyes attempting to grant vision!", LogType.DEBUG, LogType.SZEIBER_CAP,
                 LogType.SPAMMY);
 
         Entity shooter = e.getEntity();
 
         // Grant vision if necessary
         if(ticksRemaining <= 0 && this.storage >= this.consumption) {
-            Log.log("[ArchEyesCap] ArchEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
+            Log.log("[RadEyesCap] ArchEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
             this.storage -= this.consumption;
             ticksRemaining += 20;
         }
 
         // Restock energy if necessary
         if(this.storage < this.consumption) {
-            Log.log("[ArchEyesCap] ArchEyes missing Energy, posting Event.", LogType.DEBUG, LogType.SZEIBER_CAP,
-                    LogType.SPAMMY);
+            Log.log("[RadEyesCap] Missing Energy, posting Event.", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
             int missingEnergy = this.maxStorage - this.storage;
             EnergyConsumptionEvent event = new EnergyConsumptionEvent(shooter, missingEnergy);
             MinecraftForge.EVENT_BUS.post(event);
-            Log.log("[ArchEyesCap] Event granted " + (missingEnergy - event.getRemainingAmount()) + " Energy.",
+            Log.log("[RadEyesCap] Event granted " + (missingEnergy - event.getRemainingAmount()) + " Energy.",
                     LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
             this.storage += (missingEnergy - event.getRemainingAmount());
         }
 
-        // Grant vision if it is activated
+        // Check whether vision should still be granted
         if(ticksRemaining > 0) {
             --ticksRemaining;
+            Log.log("[RadEyesCap] Ticks Remaining!.", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
+            active = true;
+        }
+        else {
+            active = false;
+        }
 
-            if(shooter.world.isRemote) {
-                Log.log("[ArchEyesCap] Attempting to spawn fake arrow!.", LogType.DEBUG, LogType.SZEIBER_CAP,
-                        LogType.SPAMMY);
-                ItemStack itemstack = e.getItem();
-                ItemBow bow = (ItemBow) itemstack.getItem();
-
-                // Calculate the current force of the bow
-                int charge = bow.getMaxItemUseDuration(itemstack) - e.getDuration();
-                float force = charge / 20.0F;
-                force = (force * force + force * 2.0F) / 3.0F;
-
-                if(force > 1.0F) {
-                    force = 1.0F;
+        // Set Vision accordingly
+        if(shooter.world.isRemote) {
+            for(Entity oneOfAll : shooter.getEntityWorld().getLoadedEntityList()) {
+                if(oneOfAll instanceof EntityLivingBase) {
+                    Log.log("[RadEyesCap] Found Living Entity of type: " + oneOfAll.getClass(), LogType.DEBUG,
+                            LogType.SZEIBER_CAP, LogType.SPAMMY);
+                    ((EntityLivingBase) oneOfAll).setGlowing(active);
                 }
-
-                EntityArrowFake entityarrow = new EntityArrowFake(e.getEntity().world, e.getEntityLiving());
-                entityarrow.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, force * 3.0F, 1.0F);
-                e.getEntity().world.spawnEntity(entityarrow);
             }
         }
     }

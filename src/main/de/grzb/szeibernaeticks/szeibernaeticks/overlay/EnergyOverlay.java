@@ -1,8 +1,8 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.overlay;
 
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ConductiveVeins;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.IArmoury;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.ConductiveVeins;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;

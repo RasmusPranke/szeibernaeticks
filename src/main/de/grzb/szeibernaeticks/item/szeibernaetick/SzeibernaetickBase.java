@@ -4,11 +4,11 @@ import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.item.ItemBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.CapabilityProvider;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetick;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.IArmoury;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.ISzeibernaetickEventHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -122,6 +122,6 @@ public class SzeibernaetickBase extends ItemBase {
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
         Log.log("Adding Capability to this item.", LogType.ITEM, LogType.SZEIBER_CAP, LogType.DEBUG);
-        return new CapabilityProvider(this.getCapabilityInstance());
+        return new SzeibernaetickCapabilityProvider(this.getCapabilityInstance());
     }
 }
