@@ -1,0 +1,15 @@
+{
+    "joints": {},
+    "clips": {
+        "default": {
+            "loop": false,
+            "joint_clips": {},
+            "events": {}
+        },
+        "moving": {
+            "loop": true,
+            "joint_clips": {},
+            "events": {}
+        }
+    }
+}

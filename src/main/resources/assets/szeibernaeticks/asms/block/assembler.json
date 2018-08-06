@@ -1,0 +1,17 @@
+{
+    "parameters": {
+        "slowed_anim_time": ["/", 4]
+    },
+    "clips": {
+        "default": "szeibernaeticks:block/assembler@default",
+        "moving": ["apply", "szeibernaeticks:block/assembler@moving", "#slowed_anim_time"]
+    },
+    "states": [
+        "default", "moving"
+    ],
+    "transitions": {
+        "default": "moving",
+        "moving": "default"
+    },
+    "start_state": "default"
+}
