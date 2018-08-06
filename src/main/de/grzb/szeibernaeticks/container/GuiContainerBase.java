@@ -20,7 +20,7 @@ public abstract class GuiContainerBase extends ContainerBase {
     protected GuiId guiId;
     protected GuiLayoutDefinition layout;
 
-    private ResourceLocation background = new ResourceLocation(Szeibernaeticks.RESOURCE_PREFIX + "textures/gui/container/" + this.tileEntityContainer.getName() + ".png");
+    private ResourceLocation background = new ResourceLocation(Szeibernaeticks.MOD_ID, "textures/gui/container/" + this.tileEntityContainer.getName() + ".png");
 
     /**
      * Sets up a basic GUI layout. Take care for the player's own inventory and

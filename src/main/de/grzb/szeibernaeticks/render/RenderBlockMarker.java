@@ -20,7 +20,7 @@ public class RenderBlockMarker extends RenderEntity {
         Log.log("Creating Block Marker Renderer!", LogType.RENDER, LogType.DEBUG);
         model = new ModelBlock();
         transparentTexture = new ResourceLocation(
-                Szeibernaeticks.RESOURCE_PREFIX + "textures/entity/blockMarker/transparentTexture.png");
+                Szeibernaeticks.MOD_ID, "textures/entity/blockMarker/transparentTexture.png");
         bindTexture(transparentTexture);
     }
 
