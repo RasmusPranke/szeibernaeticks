@@ -76,7 +76,7 @@ public class ConductiveVeins implements ISzeibernaetick {
     }
 
     /**
-     * Handles the given EnergyConsumptionEvent TODO: DOesn't quite work right
+     * Handles the given EnergyConsumptionEvent TODO: Doesn't quite work right
      * now, debug this + Archers eyes
      *
      * @param e
