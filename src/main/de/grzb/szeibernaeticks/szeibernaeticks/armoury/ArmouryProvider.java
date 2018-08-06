@@ -1,4 +1,4 @@
-package main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury;
+package main.de.grzb.szeibernaeticks.szeibernaeticks.armoury;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTBase;

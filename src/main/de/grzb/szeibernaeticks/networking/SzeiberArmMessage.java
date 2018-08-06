@@ -1,9 +1,9 @@
 package main.de.grzb.szeibernaeticks.networking;
 
 import io.netty.buffer.ByteBuf;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryStorage;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryStorage;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.IArmoury;
 
 public class SzeiberArmMessage extends NBTMessage {
 

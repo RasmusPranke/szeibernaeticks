@@ -1,8 +1,8 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.event;
 
+import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.IArmoury;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.RunnersLegs;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.ArmouryProvider;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.armoury.IArmoury;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
