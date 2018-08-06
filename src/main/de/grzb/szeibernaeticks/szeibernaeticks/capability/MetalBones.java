@@ -1,6 +1,7 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.capability;
 
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**

@@ -2,8 +2,8 @@ package main.de.grzb.szeibernaeticks.szeibernaeticks.armoury;
 
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.ISzeibernaetick;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;

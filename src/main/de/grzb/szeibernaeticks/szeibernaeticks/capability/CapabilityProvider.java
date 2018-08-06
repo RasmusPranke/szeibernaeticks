@@ -1,5 +1,6 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.capability;
 
+import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;

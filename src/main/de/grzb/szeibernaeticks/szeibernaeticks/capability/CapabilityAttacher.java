@@ -3,6 +3,7 @@ package main.de.grzb.szeibernaeticks.szeibernaeticks.capability;
 import main.de.grzb.szeibernaeticks.Szeibernaeticks;
 import main.de.grzb.szeibernaeticks.networking.SzeiberCapMessage;
 import main.de.grzb.szeibernaeticks.networking.NetworkWrapper;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SzeibernaetickInstalledEvent;
 import net.minecraft.entity.Entity;

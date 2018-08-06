@@ -3,6 +3,7 @@ package main.de.grzb.szeibernaeticks.szeibernaeticks.capability;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
