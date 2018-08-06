@@ -1,6 +1,5 @@
-package main.de.grzb.szeibernaeticks.szeibernaeticks.classes;
+package main.de.grzb.szeibernaeticks.szeibernaeticks;
 
-import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -13,7 +12,7 @@ import net.minecraftforge.common.capabilities.Capability.IStorage;
  *
  * @author DemRat
  */
-public class CapabilityStorage implements IStorage<ISzeibernaetick> {
+public class SzeibernaetickCapabilityStorage implements IStorage<ISzeibernaetick> {
 
     @Override
     public NBTBase writeNBT(Capability<ISzeibernaetick> capability, ISzeibernaetick instance, EnumFacing side) {
