@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.CapabilityProvider;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.CapabilityProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;

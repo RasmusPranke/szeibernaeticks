@@ -6,7 +6,7 @@ import main.de.grzb.szeibernaeticks.container.slot.SlotBodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.IArmoury;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.CapabilityProvider;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.CapabilityProvider;
 import main.de.grzb.szeibernaeticks.tileentity.TileEntityGuiContainerBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;

@@ -4,7 +4,7 @@ import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.IArmoury;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.DynamoJoints;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.DynamoJoints;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 

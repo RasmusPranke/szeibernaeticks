@@ -4,7 +4,7 @@ import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.IArmoury;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.capability.SyntheticEyes;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.SyntheticEyes;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
