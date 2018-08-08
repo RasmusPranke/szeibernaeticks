@@ -2,37 +2,25 @@ package main.de.grzb.szeibernaeticks.szeibernaeticks;
 
 import net.minecraft.nbt.NBTTagCompound;
 
+//TODO: Add option to enable/disable certain cybernetics.
+//TODO: Add alternate quickbar for this. RenderGameOverlayEvent!
+
 /**
  * Stores and retrieves the data behind a Szeibernaetick.
  *
  *
- * Structure of an NBTTag containing a Szeibernaeticks Tag:
- * {
- *     OtherTag : Value,
- *     "Szeibernaeticks" : {
- *         Unlocalized Name : {
- *             "Properties" : {
- *                 "damage" : The damage value,
- *                 Item Specific Properties : Their value
- *             }
- *         }
- *     },
- *     AnotherTag : Value
- * }
+ * Structure of an NBTTag containing a Szeibernaeticks Tag: { OtherTag : Value,
+ * "Szeibernaeticks" : { Unlocalized Name : { "Properties" : { "damage" : The
+ * damage value, Item Specific Properties : Their value } } }, AnotherTag :
+ * Value }
  *
- * When passing this between methods/objects, the "Szeibernaeticks" Compound Tag is the base tag:
- * {
- *     Unlocalized Name : {
- *         "Properties" : {
- *             "damage" : The damage value,
- *             Item Specific Properties : Their value
- *         }
- *     }
- * }
+ * When passing this between methods/objects, the "Szeibernaeticks" Compound Tag
+ * is the base tag: { Unlocalized Name : { "Properties" : { "damage" : The
+ * damage value, Item Specific Properties : Their value } } }
  *
- * Naming convention:
- * Compound Tags are written in PascalCase : "Properties", "ThisIsAdvancedStuff"
- * Primitive Tags are written in camelCase : "damage", "advancedValue"
+ * Naming convention: Compound Tags are written in PascalCase : "Properties",
+ * "ThisIsAdvancedStuff" Primitive Tags are written in camelCase : "damage",
+ * "advancedValue"
  *
  *
  * @author DemRat
