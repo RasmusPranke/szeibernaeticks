@@ -31,7 +31,7 @@ public class GuiContainerRendererAssembler extends GuiContainerRendererBase {
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
+    protected void actionPerformed(GuiButton button) {
         Log.log("Player pressed INSTALL", LogType.INFO);
         NetworkWrapper.INSTANCE.sendToServer(new GuiMessage("Player pressed INSTALL"));
     }

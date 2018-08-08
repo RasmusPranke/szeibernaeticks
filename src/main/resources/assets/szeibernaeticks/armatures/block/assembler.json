@@ -1,9 +1,38 @@
 {
-    "joints": {},
+    "joints": {
+        "saw": {"11": [1.0]}
+    },
     "clips": {
         "default": {
-            "loop": false,
-            "joint_clips": {},
+            "loop": true,
+            "joint_clips": {
+                "saw": [
+                    {
+                        "variable": "axis_z",
+                        "type": "uniform",
+                        "interpolation": "nearest",
+                        "samples": [1]
+                    },
+                    {
+                        "variable": "origin_x",
+                        "type": "uniform",
+                        "interpolation": "nearest",
+                        "samples": [-0.180740625]
+                    },
+                    {
+                        "variable": "origin_y",
+                        "type": "uniform",
+                        "interpolation": "nearest",
+                        "samples": [1.391765]
+                    },
+                    {
+                        "variable": "angle",
+                        "type": "uniform",
+                        "interpolation": "linear",
+                        "samples": [180, 0]
+                    }
+                ]
+            },
             "events": {}
         },
         "moving": {

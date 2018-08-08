@@ -3,7 +3,7 @@
         "slowed_anim_time": ["/", 4]
     },
     "clips": {
-        "default": "szeibernaeticks:block/assembler@default",
+        "default": ["apply", "szeibernaeticks:block/assembler@default", "#slowed_anim_time"],
         "moving": ["apply", "szeibernaeticks:block/assembler@moving", "#slowed_anim_time"]
     },
     "states": [

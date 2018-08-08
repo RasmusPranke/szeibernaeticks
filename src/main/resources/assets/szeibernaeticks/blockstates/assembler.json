@@ -1,15 +1,14 @@
 {
     "forge_marker": 1,
-    "defaults": {
-    },
+    "defaults": {},
     "variants": {
         "normal": {
             "model": "szeibernaeticks:assembler"
         },
-        "facing=north,static=true": {"model": "szeibernaeticks:assembler", "y": 0, "x": 0 },
-        "facing=south,static=true": {"model": "szeibernaeticks:assembler", "y": 180, "x": 0 },
-        "facing=east,static=true":  {"model": "szeibernaeticks:assembler", "y": 90, "x": 0 },
-        "facing=west,static=true":  {"model": "szeibernaeticks:assembler", "y": 270, "x": 0 },
+        "facing=north,static=true": {"model": "szeibernaeticks:assembler_static", "y": 0, "x": 0 },
+        "facing=south,static=true": {"model": "szeibernaeticks:assembler_static", "y": 180, "x": 0 },
+        "facing=east,static=true":  {"model": "szeibernaeticks:assembler_static", "y": 90, "x": 0 },
+        "facing=west,static=true":  {"model": "szeibernaeticks:assembler_static", "y": 270, "x": 0 },
         "facing=north,static=false": {"model": "szeibernaeticks:assembler", "y": 0, "x": 0 },
         "facing=south,static=false": {"model": "szeibernaeticks:assembler", "y": 180, "x": 0 },
         "facing=east,static=false":  {"model": "szeibernaeticks:assembler", "y": 90, "x": 0 },
