@@ -9,6 +9,7 @@ import main.de.grzb.szeibernaeticks.item.ModItems;
 import main.de.grzb.szeibernaeticks.networking.GuiMessage;
 import main.de.grzb.szeibernaeticks.networking.NetworkWrapper;
 import main.de.grzb.szeibernaeticks.networking.SzeiberCapMessage;
+import main.de.grzb.szeibernaeticks.potion.ModPotions;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ArmouryAttacher;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityStorage;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
@@ -52,6 +53,7 @@ public class CommonProxy {
         ModItems.init();
         ModBlocks.init();
         ModTileEntities.init();
+        ModPotions.init();
 
         NetworkWrapper.INSTANCE.registerMessage(SzeiberCapMessage.SzeiberCapMessageHandler.class, SzeiberCapMessage.class, NetworkWrapper.getId(), Side.CLIENT);
         NetworkWrapper.INSTANCE.registerMessage(GuiMessage.GuiMessageHandler.class, GuiMessage.class, NetworkWrapper.getId(), Side.SERVER);
