@@ -59,7 +59,7 @@ public class CommonProxy {
         NetworkWrapper.INSTANCE.registerMessage(GuiMessage.GuiMessageHandler.class, GuiMessage.class, NetworkWrapper.getId(), Side.SERVER);
 
         MinecraftForge.EVENT_BUS.register(new ArmouryAttacher());
-        MinecraftForge.EVENT_BUS.register(new LogType.DebugConfig());
+        MinecraftForge.EVENT_BUS.register(new ModConfig());
 
         // TODO: Change this, maybe put somewhere else
         EntityRegistry.registerModEntity(new ResourceLocation(Szeibernaeticks.MOD_ID, "block_marker"), EntityBlockMarker.class, "block_marker", 0, Szeibernaeticks.instance, 20, 3, false);

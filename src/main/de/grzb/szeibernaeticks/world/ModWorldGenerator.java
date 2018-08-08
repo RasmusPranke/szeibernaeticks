@@ -1,5 +1,6 @@
 package main.de.grzb.szeibernaeticks.world;
 
+import main.de.grzb.szeibernaeticks.ModConfig;
 import main.de.grzb.szeibernaeticks.block.ModBlocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -13,16 +14,16 @@ import java.util.Random;
 
 public class ModWorldGenerator implements IWorldGenerator {
 
-    private WorldGenerator generateOreCopper;
-
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         switch(world.provider.getDimension()) {
             case -1:
                 break;
             case 0:
-                this.generateOreCopper = new WorldGenMinable(ModBlocks.ore_copper.getDefaultState(), 8);
-                this.runGenerator(this.generateOreCopper, world, random, chunkX, chunkZ, 20, 0, 64);
+                if(ModConfig.worldGen.GENERATE_COPPER) {
+                    WorldGenerator generateOreCopper = new WorldGenMinable(ModBlocks.ore_copper.getDefaultState(), 8);
+                    this.runGenerator(generateOreCopper, world, random, chunkX, chunkZ, 20, 0, 64);
+                }
                 break;
             case 1:
                 break;
