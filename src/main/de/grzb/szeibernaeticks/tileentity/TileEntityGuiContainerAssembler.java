@@ -32,6 +32,10 @@ public class TileEntityGuiContainerAssembler extends TileEntityGuiContainerBase 
     private final IAnimationStateMachine asm;
     private static final int SLOTS_PER_ROW = 6;
 
+    public TileEntityGuiContainerAssembler() {
+        this(null);
+    }
+
     public TileEntityGuiContainerAssembler(Block block) {
         this("assembler", block, BodyPart.getBodySet().size());
     }
