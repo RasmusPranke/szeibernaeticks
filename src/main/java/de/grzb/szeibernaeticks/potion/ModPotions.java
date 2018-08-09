@@ -19,7 +19,7 @@ public class ModPotions {
     public static void init() {
         ModPotions.potionRegistry = GameRegistry.findRegistry(Potion.class);
 
-       potionRejection = register(new PotionRejection());
+        potionRejection = register(new PotionRejection());
     }
 
     /**
@@ -29,7 +29,7 @@ public class ModPotions {
      * @return {@link Potion}
      */
     private static <T extends Potion> T register(T potion) {
-        ModPotions.potionRegistry.register(new PotionRejection());
+        ModPotions.potionRegistry.register(potion);
         return potion;
     }
 }
