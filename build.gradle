@@ -60,10 +60,3 @@ processResources {
         exclude "mcmod.info"
     }
 }
-
-idea {
-    module {
-        sourceDirs += file("src")
-        inheritOutputDirs = true
-    }
-}
