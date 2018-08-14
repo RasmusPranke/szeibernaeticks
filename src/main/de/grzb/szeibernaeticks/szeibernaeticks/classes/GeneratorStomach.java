@@ -1,9 +1,13 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
+import java.util.ArrayList;
+
+import main.de.grzb.szeibernaeticks.Szeibernaeticks;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
+import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
@@ -12,14 +16,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 
-public class GeneratorStomach implements ISzeibernaetick, IEnergyProducer, IEnergyConsumer {
-
+public class GeneratorStomach extends SzeibernaetickBase implements IEnergyProducer, IEnergyConsumer {
+    private static final String identifier = Szeibernaeticks.MOD_ID + ":GeneratorStomach";
     private int storage;
     private int maxStorage;
 
     @Override
     public String getIdentifier() {
-        return "GeneratorStomach";
+        return identifier;
     }
 
     @Override
@@ -126,6 +130,11 @@ public class GeneratorStomach implements ISzeibernaetick, IEnergyProducer, IEner
         }
 
         return retrieved;
+    }
+
+    @Override
+    public Iterable<Switch> GetSwitches() {
+        return new ArrayList<Switch>();
     }
 
 }

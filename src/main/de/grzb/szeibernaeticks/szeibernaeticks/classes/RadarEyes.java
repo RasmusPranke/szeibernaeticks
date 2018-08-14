@@ -1,9 +1,13 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
+import java.util.ArrayList;
+
+import main.de.grzb.szeibernaeticks.Szeibernaeticks;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
+import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
@@ -13,12 +17,27 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
-public class RadarEyes implements ISzeibernaetick, IEnergyConsumer {
+public class RadarEyes extends SzeibernaetickBase implements IEnergyConsumer {
+    private static final String identifier = Szeibernaeticks.MOD_ID + ":RadEyes";
     private int maxStorage = 20;
     private int storage = 0;
     private int consumption = 1;
     private int ticksRemaining = 0;
     private boolean active = false;
+    private boolean running = true;
+
+    private void SwitchActive() {
+        running = !running;
+    }
+
+    private Switch onOff = new Switch.BooleanSwitch(this::SwitchActive, identifier + ":OnOff");
+
+    @Override
+    public Iterable<Switch> GetSwitches() {
+        ArrayList<Switch> list = new ArrayList<Switch>();
+        list.add(onOff);
+        return list;
+    }
 
     {
         Log.log("Creating instance of " + this.getClass(), LogType.SZEIBER_CAP, LogType.DEBUG, LogType.INSTANTIATION);
@@ -26,7 +45,7 @@ public class RadarEyes implements ISzeibernaetick, IEnergyConsumer {
 
     @Override
     public String getIdentifier() {
-        return "RadEyes";
+        return identifier;
     }
 
     @Override
@@ -87,6 +106,7 @@ public class RadarEyes implements ISzeibernaetick, IEnergyConsumer {
         }
 
         // Set Vision accordingly
+        // TODO: This is mega inefficient
         if(shooter.world.isRemote) {
             for(Entity oneOfAll : shooter.getEntityWorld().getLoadedEntityList()) {
                 if(oneOfAll instanceof EntityLivingBase) {

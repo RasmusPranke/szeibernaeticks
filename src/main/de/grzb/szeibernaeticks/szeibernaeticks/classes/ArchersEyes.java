@@ -1,9 +1,13 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
+import java.util.ArrayList;
+
+import main.de.grzb.szeibernaeticks.Szeibernaeticks;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
+import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
@@ -15,11 +19,26 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent.Tick;
 
-public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
+public class ArchersEyes extends SzeibernaetickBase implements IEnergyConsumer {
+    private static final String identifier = Szeibernaeticks.MOD_ID + ":ArchEyes";
     private int maxStorage = 20;
     private int storage = 0;
     private int consumption = 1;
     private int ticksRemaining = 0;
+    private boolean running = true;
+
+    private void SwitchActive() {
+        running = !running;
+    }
+
+    private Switch onOff = new Switch.BooleanSwitch(this::SwitchActive, identifier + ":OnOff");
+
+    @Override
+    public Iterable<Switch> GetSwitches() {
+        ArrayList<Switch> list = new ArrayList<Switch>();
+        list.add(onOff);
+        return list;
+    }
 
     {
         Log.log("Creating instance of " + this.getClass(), LogType.SZEIBER_CAP, LogType.DEBUG, LogType.INSTANTIATION);
@@ -27,7 +46,7 @@ public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
 
     @Override
     public String getIdentifier() {
-        return "ArchEyes";
+        return identifier;
     }
 
     @Override
@@ -36,6 +55,7 @@ public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
         tag.setInteger("storage", storage);
         tag.setInteger("maxStorage", maxStorage);
         tag.setInteger("ticksRemaining", ticksRemaining);
+        tag.setBoolean("running", running);
         return tag;
     }
 
@@ -46,6 +66,7 @@ public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
             maxStorage = nbt.getInteger("maxStorage");
         }
         ticksRemaining = nbt.getInteger("ticksRemaining");
+        running = nbt.getBoolean("running");
     }
 
     @Override
@@ -54,52 +75,54 @@ public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
     }
 
     public void grantVision(Tick e) {
-        Log.log("[ArchEyesCap] ArchEyes attempting to grant vision!", LogType.DEBUG, LogType.SZEIBER_CAP,
-                LogType.SPAMMY);
-
-        Entity shooter = e.getEntity();
-
-        // Grant vision if necessary
-        if(ticksRemaining <= 0 && this.storage >= this.consumption) {
-            Log.log("[ArchEyesCap] ArchEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            this.storage -= this.consumption;
-            ticksRemaining += 20;
-        }
-
-        // Restock energy if necessary
-        if(this.storage < this.consumption) {
-            Log.log("[ArchEyesCap] ArchEyes missing Energy, posting Event.", LogType.DEBUG, LogType.SZEIBER_CAP,
+        if(running) {
+            Log.log("[ArchEyesCap] ArchEyes attempting to grant vision!", LogType.DEBUG, LogType.SZEIBER_CAP,
                     LogType.SPAMMY);
-            int missingEnergy = this.maxStorage - this.storage;
-            EnergyConsumptionEvent event = new EnergyConsumptionEvent(shooter, missingEnergy);
-            MinecraftForge.EVENT_BUS.post(event);
-            Log.log("[ArchEyesCap] Event granted " + (missingEnergy - event.getRemainingAmount()) + " Energy.",
-                    LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            this.storage += (missingEnergy - event.getRemainingAmount());
-        }
 
-        // Grant vision if it is activated
-        if(ticksRemaining > 0) {
-            --ticksRemaining;
+            Entity shooter = e.getEntity();
 
-            if(shooter.world.isRemote) {
-                Log.log("[ArchEyesCap] Attempting to spawn fake arrow!.", LogType.DEBUG, LogType.SZEIBER_CAP,
+            // Grant vision if necessary
+            if(ticksRemaining <= 0 && this.storage >= this.consumption) {
+                Log.log("[ArchEyesCap] ArchEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
+                this.storage -= this.consumption;
+                ticksRemaining += 20;
+            }
+
+            // Restock energy if necessary
+            if(this.storage < this.consumption) {
+                Log.log("[ArchEyesCap] ArchEyes missing Energy, posting Event.", LogType.DEBUG, LogType.SZEIBER_CAP,
                         LogType.SPAMMY);
-                ItemStack itemstack = e.getItem();
-                ItemBow bow = (ItemBow) itemstack.getItem();
+                int missingEnergy = this.maxStorage - this.storage;
+                EnergyConsumptionEvent event = new EnergyConsumptionEvent(shooter, missingEnergy);
+                MinecraftForge.EVENT_BUS.post(event);
+                Log.log("[ArchEyesCap] Event granted " + (missingEnergy - event.getRemainingAmount()) + " Energy.",
+                        LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
+                this.storage += (missingEnergy - event.getRemainingAmount());
+            }
 
-                // Calculate the current force of the bow
-                int charge = bow.getMaxItemUseDuration(itemstack) - e.getDuration();
-                float force = charge / 20.0F;
-                force = (force * force + force * 2.0F) / 3.0F;
+            // Grant vision if it is activated
+            if(ticksRemaining > 0) {
+                --ticksRemaining;
 
-                if(force > 1.0F) {
-                    force = 1.0F;
+                if(shooter.world.isRemote) {
+                    Log.log("[ArchEyesCap] Attempting to spawn fake arrow!.", LogType.DEBUG, LogType.SZEIBER_CAP,
+                            LogType.SPAMMY);
+                    ItemStack itemstack = e.getItem();
+                    ItemBow bow = (ItemBow) itemstack.getItem();
+
+                    // Calculate the current force of the bow
+                    int charge = bow.getMaxItemUseDuration(itemstack) - e.getDuration();
+                    float force = charge / 20.0F;
+                    force = (force * force + force * 2.0F) / 3.0F;
+
+                    if(force > 1.0F) {
+                        force = 1.0F;
+                    }
+
+                    EntityArrowFake entityarrow = new EntityArrowFake(e.getEntity().world, e.getEntityLiving());
+                    entityarrow.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, force * 3.0F, 1.0F);
+                    e.getEntity().world.spawnEntity(entityarrow);
                 }
-
-                EntityArrowFake entityarrow = new EntityArrowFake(e.getEntity().world, e.getEntityLiving());
-                entityarrow.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, force * 3.0F, 1.0F);
-                e.getEntity().world.spawnEntity(entityarrow);
             }
         }
     }
@@ -152,5 +175,4 @@ public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
     public int retrieve(int amountToRetrieve) {
         return 0;
     }
-
 }

@@ -1,12 +1,15 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
+import java.util.ArrayList;
+
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
+import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class DummyDefault implements ISzeibernaetick {
+public class DummyDefault extends SzeibernaetickBase {
 
     public DummyDefault() {
         Log.log("Dummy was instantiated! Why?", LogType.DEBUG, LogType.ERROR);
@@ -30,6 +33,11 @@ public class DummyDefault implements ISzeibernaetick {
     @Override
     public BodyPart getBodyPart() {
         return BodyPart.BONES;
+    }
+
+    @Override
+    public Iterable<Switch> GetSwitches() {
+        return new ArrayList<Switch>();
     }
 
 }

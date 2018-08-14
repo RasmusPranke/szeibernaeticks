@@ -1,7 +1,11 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
+import java.util.ArrayList;
+
+import main.de.grzb.szeibernaeticks.Szeibernaeticks;
+import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
@@ -9,15 +13,29 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 
-public class RunnersLegs implements ISzeibernaetick, IEnergyConsumer {
-
+public class RunnersLegs extends SzeibernaetickBase implements IEnergyConsumer {
+    private static final String identifier = Szeibernaeticks.MOD_ID + ":RunnersLegs";
     private int maxStorage = 20;
     private int storage = 0;
     private int consumption = 5;
+    private boolean running = true;
+
+    private void SwitchActive() {
+        running = !running;
+    }
+
+    private Switch onOff = new Switch.BooleanSwitch(this::SwitchActive, identifier + ":OnOff");
+
+    @Override
+    public Iterable<Switch> GetSwitches() {
+        ArrayList<Switch> list = new ArrayList<Switch>();
+        list.add(onOff);
+        return list;
+    }
 
     @Override
     public String getIdentifier() {
-        return "runnersLegs";
+        return identifier;
     }
 
     @Override
@@ -25,6 +43,7 @@ public class RunnersLegs implements ISzeibernaetick, IEnergyConsumer {
         NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("storage", this.storage);
         tag.setInteger("maxStorage", this.maxStorage);
+        tag.setBoolean("running", running);
         return tag;
     }
 
@@ -34,6 +53,7 @@ public class RunnersLegs implements ISzeibernaetick, IEnergyConsumer {
         if(nbt.getInteger("maxStorage") > 0) {
             this.maxStorage = nbt.getInteger("maxStorage");
         }
+        this.running = nbt.getBoolean("running");
     }
 
     @Override

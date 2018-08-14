@@ -1,7 +1,11 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
+import java.util.ArrayList;
+
+import main.de.grzb.szeibernaeticks.Szeibernaeticks;
+import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -9,13 +13,13 @@ import net.minecraft.nbt.NBTTagCompound;
  *
  * @author DemRat
  */
-public class MetalBones implements ISzeibernaetick {
-
+public class MetalBones extends SzeibernaetickBase {
+    private static final String identifier = Szeibernaeticks.MOD_ID + ":MetalBones";
     private int damage;
 
     @Override
     public String getIdentifier() {
-        return "MetalBones";
+        return identifier;
     }
 
     public MetalBones() {
@@ -37,5 +41,10 @@ public class MetalBones implements ISzeibernaetick {
     @Override
     public BodyPart getBodyPart() {
         return BodyPart.BONES;
+    }
+
+    @Override
+    public Iterable<Switch> GetSwitches() {
+        return new ArrayList<Switch>();
     }
 }

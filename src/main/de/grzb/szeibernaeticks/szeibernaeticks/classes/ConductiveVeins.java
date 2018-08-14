@@ -1,13 +1,16 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
 import io.netty.util.internal.ConcurrentSet;
+import main.de.grzb.szeibernaeticks.Szeibernaeticks;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
+import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent;
@@ -16,15 +19,15 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyProducer;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyStorer;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class ConductiveVeins implements ISzeibernaetick {
-
+public class ConductiveVeins extends SzeibernaetickBase {
+    private static final String identifier = Szeibernaeticks.MOD_ID + ":CondVeins";
     private ConcurrentSet<IEnergyProducer> producers = new ConcurrentSet<IEnergyProducer>();
     private ConcurrentSet<IEnergyConsumer> consumers = new ConcurrentSet<IEnergyConsumer>();
 
     public ConductiveVeins() {
     }
 
-    public void register(ISzeibernaetick szeiber) {
+    public void register(SzeibernaetickBase szeiber) {
         Log.log("Adding " + szeiber.getIdentifier() + " to the Energy Network.", LogType.DEBUG, LogType.SZEIBER_HANDLER,
                 LogType.SZEIBER_ENERGY);
         if(szeiber instanceof IEnergyProducer) {
@@ -40,7 +43,7 @@ public class ConductiveVeins implements ISzeibernaetick {
         }
     }
 
-    public void unregister(ISzeibernaetick szeiber) {
+    public void unregister(SzeibernaetickBase szeiber) {
         Log.log("Removing " + szeiber.getIdentifier() + " from the Energy Network.", LogType.DEBUG,
                 LogType.SZEIBER_HANDLER, LogType.SZEIBER_ENERGY);
 
@@ -59,7 +62,7 @@ public class ConductiveVeins implements ISzeibernaetick {
 
     @Override
     public String getIdentifier() {
-        return "VeinsCapability";
+        return identifier;
     }
 
     @Override
@@ -191,5 +194,10 @@ public class ConductiveVeins implements ISzeibernaetick {
         }
 
         return total;
+    }
+
+    @Override
+    public Iterable<Switch> GetSwitches() {
+        return new ArrayList<>();
     }
 }

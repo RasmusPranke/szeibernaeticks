@@ -1,9 +1,13 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
+import java.util.ArrayList;
+
+import main.de.grzb.szeibernaeticks.Szeibernaeticks;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
+import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
@@ -12,7 +16,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 
-public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyProducer {
+public class DynamoJoints extends SzeibernaetickBase implements IEnergyConsumer, IEnergyProducer {
+    private static final String identifier = Szeibernaeticks.MOD_ID + ":DynamoJoints";
 
     private int maxStorage = 100;
     private int storage = 0;
@@ -20,7 +25,7 @@ public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyPr
 
     @Override
     public String getIdentifier() {
-        return "dynamoJoints";
+        return identifier;
     }
 
     @Override
@@ -149,6 +154,11 @@ public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyPr
     @Override
     public int retrieve(int amountToRetrieve) {
         return 0;
+    }
+
+    @Override
+    public Iterable<Switch> GetSwitches() {
+        return new ArrayList<Switch>();
     }
 
 }
