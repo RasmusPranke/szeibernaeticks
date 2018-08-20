@@ -9,7 +9,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class SzeibernaetickRadarEyesHandler implements ISzeibernaetickEventHandler {
+public class RadarEyesHandler implements ISzeibernaetickEventHandler {
     @SubscribeEvent
     public void onLivingUpdate(LivingUpdateEvent e) {
         Log.log("[RadEyesHandler] Recieving event!", LogType.DEBUG, LogType.SPAMMY, LogType.SZEIBER_HANDLER);

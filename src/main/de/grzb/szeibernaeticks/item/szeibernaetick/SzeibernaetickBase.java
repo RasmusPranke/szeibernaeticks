@@ -4,10 +4,10 @@ import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.item.ItemBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.IArmoury;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.ISzeibernaetickEventHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -16,7 +16,9 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 /**
  * TODO: Overhaul this Class Comment Stores and retrieves the data behind a
@@ -49,45 +51,38 @@ import net.minecraftforge.common.MinecraftForge;
  */
 public abstract class SzeibernaetickBase extends ItemBase {
 
-    public SzeibernaetickBase(String name, Class<? extends ISzeibernaetickEventHandler> handler) {
-        this(name, handler, CreativeTabs.COMBAT);
+    @CapabilityInject(ISzeibernaetick.class)
+    public static final Capability<ISzeibernaetick> SZEIBER_CAP = null;
+
+    public SzeibernaetickBase(SzeibernaetickIdentifier name) {
+        this(name, CreativeTabs.COMBAT);
     }
 
-    public SzeibernaetickBase(String name, Class<? extends ISzeibernaetickEventHandler> handler, CreativeTabs tab) {
-        super(name);
-        Log.log("Creating Item of type: " + this.getClass(), LogType.DEBUG, LogType.INSTANTIATION, LogType.ITEM);
-
-        try {
-            MinecraftForge.EVENT_BUS.register(handler.newInstance());
-        }
-        catch(InstantiationException e) {
-            Log.log("Could not instantiate the Handler for this Szeibernaetick.", LogType.EXCEPTION);
-            Log.logThrowable(e);
-        }
-        catch(IllegalAccessException e) {
-            Log.log("Could not access the Handler for this Szeibernaetick.", LogType.EXCEPTION);
-            Log.logThrowable(e);
-        }
+    public SzeibernaetickBase(SzeibernaetickIdentifier name, CreativeTabs tab) {
+        super(name.getShortIdentifier());
+        Log.log("[SzeiberBase] Creating Item of type: " + this.getClass(), LogType.DEBUG, LogType.INSTANTIATION,
+                LogType.ITEM);
 
         this.setCreativeTab(tab);
     }
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
-        Log.log(this.getClass() + " right clicked!", LogType.ITEM, LogType.DEBUG);
+        Log.log("[SzeiberBase]" + this.getClass() + " right clicked!", LogType.ITEM, LogType.DEBUG);
         // Get the Stack currently right-clicked
         ItemStack thisStack = playerIn.getHeldItem(handIn);
         // Make sure that the itemStack actually is of this Item.
         if(thisStack.getItem().equals(this)) {
-            Log.log("Correct Item!", LogType.ITEM, LogType.DEBUG, LogType.SPECIFIC);
+            Log.log("[SzeiberBase] Correct Item!", LogType.ITEM, LogType.DEBUG, LogType.SPECIFIC);
 
             IArmoury szeiberArm = playerIn.getCapability(ArmouryProvider.ARMOURY_CAP, null);
             Log.log("Armoury is: " + szeiberArm, LogType.ITEM, LogType.SZEIBER_ARM, LogType.DEBUG, LogType.SPECIFIC);
-            // Add the ItemStack to it.
-            if(szeiberArm != null && szeiberArm.addSzeibernaetick(this)) {
-                Log.log("Successfully added Capability! Shrinking stack now.", LogType.ITEM, LogType.DEBUG,
-                        LogType.SPECIFIC);
-                thisStack.shrink(1);
+            if(szeiberArm != null) {
+                if(szeiberArm.addSzeibernaetick(thisStack.getCapability(SZEIBER_CAP, null))) {
+                    Log.log("[SzeiberBase] Successfully added Capability! Shrinking stack now.", LogType.ITEM,
+                            LogType.DEBUG, LogType.SPECIFIC);
+                    thisStack.shrink(1);
+                }
             }
         }
 
@@ -101,34 +96,6 @@ public abstract class SzeibernaetickBase extends ItemBase {
      */
     public abstract BodyPart getBodyPart();
 
-    /**
-     * Returns an unique Identifier for this capability _class_, not instance.
-     * This is primarily used as part of the key when attaching this capability
-     * to items.
-     *
-     * @return An unique Identifier.
-     */
-    public abstract String getIdentifier();
-
-    /**
-     * Stores this Capability as a NBTTagCompound.
-     *
-     * @return The NBT storing this capability.
-     */
-    public abstract NBTTagCompound toNBT();
-
-    /**
-     * Restores this capabilities values from an NBTTagCompound.
-     *
-     * @param nbt
-     */
-    public abstract void fromNBT(NBTTagCompound nbt);
-
-    /**
-     * Returns a list of switchables which together control all ad-hoc
-     * modifiable state of this Szeibernaetick.
-     * 
-     * @return
-     */
-    public abstract Iterable<Switch> GetSwitches();
+    @Override
+    public abstract ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt);
 }

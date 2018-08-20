@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class SzeibernaetickArchersEyesHandler implements ISzeibernaetickEventHandler {
+public class ArchersEyesHandler implements ISzeibernaetickEventHandler {
 
     @SubscribeEvent
     public void onDrawBow(LivingEntityUseItemEvent.Tick e) {

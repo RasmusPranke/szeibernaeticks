@@ -1,16 +1,17 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.armoury;
 
+import java.util.Set;
+
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
-
-import java.util.Set;
 
 /**
  * Responsible for converting ISzeibernaetickStorageCapabilities to NBT and
@@ -42,7 +43,8 @@ public class ArmouryStorage implements IStorage<IArmoury> {
             NBTTagCompound compound = tag.getCompoundTag(s);
             if(compound != null) {
                 ISzeibernaetick cap;
-                Class<? extends ISzeibernaetick> capClass = SzeibernaetickMapper.instance.getCapabilityFromIdentifier(s);
+                Class<? extends ISzeibernaetick> capClass = SzeibernaetickMapper.instance
+                        .getCapabilityFromIdentifier(SzeibernaetickIdentifier.fromString(s));
                 try {
                     cap = capClass.newInstance();
                     cap.fromNBT(compound);
@@ -68,7 +70,7 @@ public class ArmouryStorage implements IStorage<IArmoury> {
         // them to the NBT.
         NBTTagCompound tag = new NBTTagCompound();
         for(ISzeibernaetick szeiber : instance.getSzeibernaeticks()) {
-            tag.setTag(szeiber.getIdentifier(), szeiber.toNBT());
+            tag.setTag(szeiber.getIdentifier().getFullIdentifier(), szeiber.toNBT());
         }
 
         return tag;

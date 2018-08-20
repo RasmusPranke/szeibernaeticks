@@ -1,5 +1,7 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks;
 
+import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 //TODO: Add option to enable/disable certain cybernetics.
@@ -34,7 +36,7 @@ public interface ISzeibernaetick {
      *
      * @return An unique Identifier.
      */
-    String getIdentifier();
+    SzeibernaetickIdentifier getIdentifier();
 
     /**
      * Stores this Capability as a NBTTagCompound.
@@ -56,4 +58,19 @@ public interface ISzeibernaetick {
      * @return
      */
     BodyPart getBodyPart();
+
+    /**
+     * Returns a list of Switches representing all the ways the Szeibernaetick
+     * can be adjusted ad-hoc.
+     * 
+     * @return
+     */
+    Iterable<Switch> getSwitches();
+
+    /**
+     * Generates an ItemStack which has this Capability.
+     * 
+     * @return
+     */
+    ItemStack generateItemStack();
 }

@@ -3,38 +3,65 @@ package main.de.grzb.szeibernaeticks.szeibernaeticks.classes;
 import java.util.ArrayList;
 
 import main.de.grzb.szeibernaeticks.Szeibernaeticks;
+import main.de.grzb.szeibernaeticks.item.ModItems;
 import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.event.RunnersLegsHandler;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class RunnersLegs extends SzeibernaetickBase implements IEnergyConsumer {
-    private static final String identifier = Szeibernaeticks.MOD_ID + ":RunnersLegs";
+public class RunnersLegs implements ISzeibernaetick, IEnergyConsumer {
+    private static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
+            "RunnersLegs");
+    private static final BodyPart bodyPart = BodyPart.LEGS;
     private int maxStorage = 20;
     private int storage = 0;
     private int consumption = 5;
     private boolean running = true;
 
-    private void SwitchActive() {
-        running = !running;
+    private class OnOffSwitch extends Switch.BooleanSwitch {
+        public OnOffSwitch(ISzeibernaetick sourceSzeiber, String name) {
+            super(sourceSzeiber, name);
+        }
+
+        @Override
+        protected boolean getValue() {
+            return running;
+        }
+
+        @Override
+        protected void setValue(boolean val) {
+            running = val;
+        }
+
+        @Override
+        public boolean IsActive() {
+            return true;
+        }
+
     }
 
-    private Switch onOff = new Switch.BooleanSwitch(this::SwitchActive, identifier + ":OnOff");
+    private Switch onOff = new OnOffSwitch(this, "OnOff");
 
     @Override
-    public Iterable<Switch> GetSwitches() {
+    public Iterable<Switch> getSwitches() {
         ArrayList<Switch> list = new ArrayList<Switch>();
         list.add(onOff);
         return list;
     }
 
     @Override
-    public String getIdentifier() {
+    public SzeibernaetickIdentifier getIdentifier() {
         return identifier;
     }
 
@@ -58,7 +85,7 @@ public class RunnersLegs extends SzeibernaetickBase implements IEnergyConsumer {
 
     @Override
     public BodyPart getBodyPart() {
-        return BodyPart.LEGS;
+        return bodyPart;
     }
 
     public boolean grantSpeed(Entity target) {
@@ -125,4 +152,35 @@ public class RunnersLegs extends SzeibernaetickBase implements IEnergyConsumer {
         return 0;
     }
 
+    @Override
+    public ItemStack generateItemStack() {
+        ItemStack stack = new ItemStack(Item.item);
+        return stack;
+    }
+
+    public static class Item extends SzeibernaetickBase {
+        public static Item item;
+
+        public Item() {
+            super(identifier);
+        }
+
+        @Override
+        public BodyPart getBodyPart() {
+            return bodyPart;
+        }
+
+        @Override
+        public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+            RunnersLegs cap = new RunnersLegs();
+            if(nbt != null) {
+                cap.fromNBT(nbt);
+            }
+            return new SzeibernaetickCapabilityProvider(cap);
+        }
+    }
+
+    public static void register(ModItems.RegisteringMethod method) {
+        Item.item = method.registerSzeibernaetick(new Item(), RunnersLegsHandler.class);
+    }
 }

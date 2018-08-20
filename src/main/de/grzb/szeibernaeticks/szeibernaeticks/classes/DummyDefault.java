@@ -4,20 +4,22 @@ import java.util.ArrayList;
 
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
-import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class DummyDefault extends SzeibernaetickBase {
+public class DummyDefault implements ISzeibernaetick {
 
     public DummyDefault() {
         Log.log("Dummy was instantiated! Why?", LogType.DEBUG, LogType.ERROR);
     }
 
     @Override
-    public String getIdentifier() {
-        return "DEFAULT_SHOULD_NOT_SHOW_UP";
+    public SzeibernaetickIdentifier getIdentifier() {
+        return new SzeibernaetickIdentifier("SRSRLY_NO", "DEFAULT_SHOULD_NOT_SHOW_UP");
     }
 
     @Override
@@ -36,8 +38,13 @@ public class DummyDefault extends SzeibernaetickBase {
     }
 
     @Override
-    public Iterable<Switch> GetSwitches() {
+    public Iterable<Switch> getSwitches() {
         return new ArrayList<Switch>();
+    }
+
+    @Override
+    public ItemStack generateItemStack() {
+        return null;
     }
 
 }

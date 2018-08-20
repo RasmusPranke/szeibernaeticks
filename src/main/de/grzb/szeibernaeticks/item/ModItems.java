@@ -11,16 +11,10 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.MetalBones;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.RadarEyes;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.RunnersLegs;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.SyntheticEyes;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.ConductiveVeinsHandler;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.DynamoJointsHandler;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.GeneratorStomachHandler;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.MetalBonesHandler;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.RunnersLegsHandler;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SyntheticEyesHandler;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SzeibernaetickArchersEyesHandler;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SzeibernaetickRadarEyesHandler;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.event.ISzeibernaetickEventHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -32,6 +26,11 @@ import net.minecraftforge.registries.IForgeRegistry;
  * @see main.de.grzb.szeibernaeticks.CommonProxy CommonProxy
  */
 public final class ModItems {
+    public interface RegisteringMethod {
+        <T extends SzeibernaetickBase> T registerSzeibernaetick(T item,
+                Class<? extends ISzeibernaetickEventHandler> handler);
+    }
+
     public static IForgeRegistry<Item> itemRegistry;
 
     public static ItemBase ingot_copper;
@@ -47,14 +46,14 @@ public final class ModItems {
 
         Log.log("Initiating items!", LogType.DEBUG, LogType.SETUP);
         ingot_copper = register(new ItemBase("ingot_copper").setCreativeTab(CreativeTabs.MATERIALS));
-        register(new SzeibernaetickBase("metal_bones", MetalBones.class, MetalBonesHandler.class));
-        register(new SzeibernaetickBase("conductive_veins", ConductiveVeins.class, ConductiveVeinsHandler.class));
-        register(new SzeibernaetickBase("dynamo_joints", DynamoJoints.class, DynamoJointsHandler.class));
-        register(new SzeibernaetickBase("synthetic_eyes", SyntheticEyes.class, SyntheticEyesHandler.class));
-        register(new SzeibernaetickBase("generator_stomach", GeneratorStomach.class, GeneratorStomachHandler.class));
-        register(new SzeibernaetickBase("archers_eyes", ArchersEyes.class, SzeibernaetickArchersEyesHandler.class));
-        register(new SzeibernaetickBase("radar_eyes", RadarEyes.class, SzeibernaetickRadarEyesHandler.class));
-        register(new SzeibernaetickBase("runners_legs", RunnersLegs.class, RunnersLegsHandler.class));
+        MetalBones.register(ModItems::registerSzeibernaetick);
+        ConductiveVeins.register(ModItems::registerSzeibernaetick);
+        DynamoJoints.register(ModItems::registerSzeibernaetick);
+        SyntheticEyes.register(ModItems::registerSzeibernaetick);
+        GeneratorStomach.register(ModItems::registerSzeibernaetick);
+        ArchersEyes.register(ModItems::registerSzeibernaetick);
+        RadarEyes.register(ModItems::registerSzeibernaetick);
+        RunnersLegs.register(ModItems::registerSzeibernaetick);
     }
 
     private static <T extends Item> T register(T item) {
@@ -65,5 +64,21 @@ public final class ModItems {
         }
 
         return item;
+    }
+
+    private static <T extends SzeibernaetickBase> T registerSzeibernaetick(T item,
+            Class<? extends ISzeibernaetickEventHandler> handler) {
+        try {
+            MinecraftForge.EVENT_BUS.register(handler.newInstance());
+        }
+        catch(InstantiationException e) {
+            Log.log("Could not instantiate the Handler for this Szeibernaetick.", LogType.EXCEPTION);
+            Log.logThrowable(e);
+        }
+        catch(IllegalAccessException e) {
+            Log.log("Could not access the Handler for this Szeibernaetick.", LogType.EXCEPTION);
+            Log.logThrowable(e);
+        }
+        return register(item);
     }
 }

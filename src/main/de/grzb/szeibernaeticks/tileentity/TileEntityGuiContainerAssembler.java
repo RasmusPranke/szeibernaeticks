@@ -1,5 +1,7 @@
 package main.de.grzb.szeibernaeticks.tileentity;
 
+import java.util.Collection;
+
 import io.netty.util.internal.ConcurrentSet;
 import main.de.grzb.szeibernaeticks.client.gui.GuiId;
 import main.de.grzb.szeibernaeticks.container.GuiContainerAssembler;
@@ -9,14 +11,11 @@ import main.de.grzb.szeibernaeticks.container.layout.SlotBodyPartDefinition;
 import main.de.grzb.szeibernaeticks.container.slot.SlotType;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
-
-import java.util.Collection;
 
 public class TileEntityGuiContainerAssembler extends TileEntityGuiContainerBase {
     private static final int SLOTS_PER_ROW = 6;
@@ -35,7 +34,8 @@ public class TileEntityGuiContainerAssembler extends TileEntityGuiContainerBase 
 
     @Override
     public GuiContainerBase getContainer(EntityPlayer player) {
-        Collection<ISzeibernaetick> szeibernaeticks = player.getCapability(ArmouryProvider.ARMOURY_CAP, null).getSzeibernaeticks();
+        Collection<ISzeibernaetick> szeibernaeticks = player.getCapability(ArmouryProvider.ARMOURY_CAP, null)
+                .getSzeibernaeticks();
         int width = 162;
         int height = 118;
 
@@ -56,7 +56,7 @@ public class TileEntityGuiContainerAssembler extends TileEntityGuiContainerBase 
             ItemStack itemStack = ItemStack.EMPTY;
             for(ISzeibernaetick capability : szeibernaeticks) {
                 if(bodyPart.equals(capability.getBodyPart())) {
-                    itemStack = new ItemStack(SzeibernaetickMapper.instance.getItemFromIdentifier(capability.getIdentifier()));
+                    itemStack = capability.generateItemStack();
                 }
             }
 
@@ -64,7 +64,9 @@ public class TileEntityGuiContainerAssembler extends TileEntityGuiContainerBase 
             i++;
         }
 
-        GuiLayoutDefinition layout = new GuiLayoutDefinition(this.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), slotBodyPartDefinitions, player.inventory, width, height);
+        GuiLayoutDefinition layout = new GuiLayoutDefinition(
+                this.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), slotBodyPartDefinitions,
+                player.inventory, width, height);
         return new GuiContainerAssembler(this, layout, this.guiId);
     }
 

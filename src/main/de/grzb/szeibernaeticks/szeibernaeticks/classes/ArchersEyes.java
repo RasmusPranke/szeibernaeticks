@@ -5,38 +5,40 @@ import java.util.ArrayList;
 import main.de.grzb.szeibernaeticks.Szeibernaeticks;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
+import main.de.grzb.szeibernaeticks.item.ModItems;
 import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.entity.EntityArrowFake;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.event.ArchersEyesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent.Tick;
 
-public class ArchersEyes extends SzeibernaetickBase implements IEnergyConsumer {
-    private static final String identifier = Szeibernaeticks.MOD_ID + ":ArchEyes";
+public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
+    private static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
+            "ArchEyes");
+
+    private static final BodyPart bodyPart = BodyPart.EYES;
     private int maxStorage = 20;
     private int storage = 0;
     private int consumption = 1;
     private int ticksRemaining = 0;
     private boolean running = true;
 
-    private void SwitchActive() {
-        running = !running;
-    }
-
-    private Switch onOff = new Switch.BooleanSwitch(this::SwitchActive, identifier + ":OnOff");
-
     @Override
-    public Iterable<Switch> GetSwitches() {
+    public Iterable<Switch> getSwitches() {
         ArrayList<Switch> list = new ArrayList<Switch>();
-        list.add(onOff);
         return list;
     }
 
@@ -45,7 +47,7 @@ public class ArchersEyes extends SzeibernaetickBase implements IEnergyConsumer {
     }
 
     @Override
-    public String getIdentifier() {
+    public SzeibernaetickIdentifier getIdentifier() {
         return identifier;
     }
 
@@ -71,7 +73,7 @@ public class ArchersEyes extends SzeibernaetickBase implements IEnergyConsumer {
 
     @Override
     public BodyPart getBodyPart() {
-        return BodyPart.EYES;
+        return bodyPart;
     }
 
     public void grantVision(Tick e) {
@@ -174,5 +176,37 @@ public class ArchersEyes extends SzeibernaetickBase implements IEnergyConsumer {
     @Override
     public int retrieve(int amountToRetrieve) {
         return 0;
+    }
+
+    @Override
+    public ItemStack generateItemStack() {
+        ItemStack stack = new ItemStack(Item.item);
+        return stack;
+    }
+
+    public static class Item extends SzeibernaetickBase {
+        public static Item item;
+
+        public Item() {
+            super(identifier);
+        }
+
+        @Override
+        public BodyPart getBodyPart() {
+            return bodyPart;
+        }
+
+        @Override
+        public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+            ArchersEyes cap = new ArchersEyes();
+            if(nbt != null) {
+                cap.fromNBT(nbt);
+            }
+            return new SzeibernaetickCapabilityProvider(cap);
+        }
+    }
+
+    public static void register(ModItems.RegisteringMethod method) {
+        Item.item = method.registerSzeibernaetick(new Item(), ArchersEyesHandler.class);
     }
 }

@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.IArmoury;
@@ -18,9 +19,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 public class SzeiberCapMessage extends NBTMessage {
 
     private NBTTagCompound capTag;
-    private String identifier;
+    private SzeibernaetickIdentifier identifier;
 
-    public SzeiberCapMessage() {}
+    public SzeiberCapMessage() {
+    }
 
     public SzeiberCapMessage(ISzeibernaetick capability) {
         this.capTag = capability.toNBT();
@@ -31,7 +33,7 @@ public class SzeiberCapMessage extends NBTMessage {
     public void fromBytes(ByteBuf buf) {
         // entityId = buf.readInt();
 
-        this.identifier = this.readString(buf);
+        this.identifier = SzeibernaetickIdentifier.fromString(this.readString(buf));
         this.capTag = this.readCompoundTag(buf);
     }
 
@@ -39,7 +41,7 @@ public class SzeiberCapMessage extends NBTMessage {
     public void toBytes(ByteBuf buf) {
         // buf.writeInt(entityId);
 
-        this.writeString(buf, this.identifier);
+        this.writeString(buf, this.identifier.getFullIdentifier());
         this.writeCompoundTag(buf, this.capTag);
     }
 
@@ -48,7 +50,7 @@ public class SzeiberCapMessage extends NBTMessage {
         @Override
         public IMessage onMessage(SzeiberCapMessage message, MessageContext context) {
             // Retrieve data from the message
-            final String identifier = message.identifier;
+            final SzeibernaetickIdentifier identifier = message.identifier;
             final NBTTagCompound comp = message.capTag;
 
             // Find out which side this is on and set the listener to schedule
@@ -72,13 +74,15 @@ public class SzeiberCapMessage extends NBTMessage {
                         cap = SzeibernaetickMapper.instance.getCapabilityFromIdentifier(identifier).newInstance();
                     }
                     catch(InstantiationException e) {
-                        Log.log("Error on instantiating Capability while sending it via SzeiberCapMessage!", LogType.ERROR);
+                        Log.log("Error on instantiating Capability while sending it via SzeiberCapMessage!",
+                                LogType.ERROR);
                         Log.logThrowable(e);
                         e.printStackTrace();
                         return;
                     }
                     catch(IllegalAccessException e) {
-                        Log.log("Error on accessing Capability class while sending it via SzeiberCapMessage!", LogType.ERROR);
+                        Log.log("Error on accessing Capability class while sending it via SzeiberCapMessage!",
+                                LogType.ERROR);
                         Log.logThrowable(e);
                         e.printStackTrace();
                         return;

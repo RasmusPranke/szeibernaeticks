@@ -31,9 +31,4 @@ public class SzeibernaetickCapabilityProvider implements ICapabilityProvider {
         }
         return null;
     }
-
-    public String getIdentifier() {
-        return this.instance.getIdentifier();
-    }
-
 }
