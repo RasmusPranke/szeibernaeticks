@@ -71,7 +71,7 @@ public class SzeiberCapMessage extends NBTMessage {
                 public void run() {
                     ISzeibernaetick cap;
                     try {
-                        cap = SzeibernaetickMapper.instance.getCapabilityFromIdentifier(identifier).newInstance();
+                        cap = SzeibernaetickMapper.INSTANCE.getCapabilityFromIdentifier(identifier).newInstance();
                     }
                     catch(InstantiationException e) {
                         Log.log("Error on instantiating Capability while sending it via SzeiberCapMessage!",

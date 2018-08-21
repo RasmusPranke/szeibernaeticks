@@ -11,12 +11,13 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyProducer;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.DynamoJointsHandler;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.DynamoJointsHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -124,7 +125,6 @@ public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyPr
      * @return The amount of energy produced.
      */
     public int produce(float height, Entity entity) {
-        Log.log("Maximum storage: " + maxStorage, LogType.TEMP);
         this.fractionalStorage += height / 4;
         int energyProduced = 0;
         if(this.fractionalStorage > 0) {
@@ -200,6 +200,7 @@ public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyPr
 
     public static void register(ModItems.RegisteringMethod method) {
         Item.item = method.registerSzeibernaetick(new Item(), DynamoJointsHandler.class);
+        SzeibernaetickMapper.INSTANCE.register(DynamoJoints.class, Item.item, identifier);
     }
 
 }

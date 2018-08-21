@@ -14,6 +14,7 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
@@ -21,7 +22,7 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyProducer;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyStorer;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.ConductiveVeinsHandler;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.ConductiveVeinsHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -241,5 +242,6 @@ public class ConductiveVeins implements ISzeibernaetick {
 
     public static void register(ModItems.RegisteringMethod method) {
         Item.item = method.registerSzeibernaetick(new Item(), ConductiveVeinsHandler.class);
+        SzeibernaetickMapper.INSTANCE.register(ConductiveVeins.class, Item.item, identifier);
     }
 }

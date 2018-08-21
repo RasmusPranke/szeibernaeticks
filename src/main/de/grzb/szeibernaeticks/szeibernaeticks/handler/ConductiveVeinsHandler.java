@@ -1,4 +1,4 @@
-package main.de.grzb.szeibernaeticks.szeibernaeticks.event;
+package main.de.grzb.szeibernaeticks.szeibernaeticks.handler;
 
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
@@ -8,6 +8,8 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.IArmoury;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.ConductiveVeins;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SzeibernaetickInstalledEvent;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SzeibernaetickRemovedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ConductiveVeinsHandler implements ISzeibernaetickEventHandler {

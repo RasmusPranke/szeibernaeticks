@@ -1,4 +1,4 @@
-package main.de.grzb.szeibernaeticks.szeibernaeticks.event;
+package main.de.grzb.szeibernaeticks.szeibernaeticks.handler;
 
 /**
  * Classes extending this are marked as implementing Events for

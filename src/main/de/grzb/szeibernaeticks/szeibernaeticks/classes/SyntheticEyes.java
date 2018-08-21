@@ -11,11 +11,12 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SyntheticEyesHandler;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.SyntheticEyesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,7 +48,7 @@ public class SyntheticEyes implements ISzeibernaetick, IEnergyConsumer {
         }
 
         @Override
-        public boolean IsActive() {
+        public boolean isActive() {
             return true;
         }
 
@@ -200,5 +201,6 @@ public class SyntheticEyes implements ISzeibernaetick, IEnergyConsumer {
 
     public static void register(ModItems.RegisteringMethod method) {
         Item.item = method.registerSzeibernaetick(new Item(), SyntheticEyesHandler.class);
+        SzeibernaetickMapper.INSTANCE.register(SyntheticEyes.class, Item.item, identifier);
     }
 }

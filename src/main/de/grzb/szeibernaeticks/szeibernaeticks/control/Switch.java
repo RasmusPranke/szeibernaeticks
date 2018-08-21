@@ -16,10 +16,10 @@ public abstract class Switch {
     public abstract void press();
 
     public String getIdentifier() {
-        return sourceSzeiber + ":" + name;
+        return sourceSzeiber.getFullIdentifier() + ":" + name;
     }
 
-    public abstract boolean IsActive();
+    public abstract boolean isActive();
 
     public abstract int GetState();
 
@@ -38,8 +38,6 @@ public abstract class Switch {
             // BufferedImage trueImage) {
             super(sourceSzeiber, name);
         }
-        
-        private boolean value = true;
 
         @Override
         public ResourceLocation GetSprite(int state) {

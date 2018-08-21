@@ -12,9 +12,9 @@ import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
  *
  * @author DemRat
  */
-public class SzeibernaetickMapper {
+public enum SzeibernaetickMapper {
 
-    public static final SzeibernaetickMapper instance = new SzeibernaetickMapper();
+    INSTANCE;
 
     private ConcurrentHashMap<Class<? extends ISzeibernaetick>, SzeibernaetickBase> itemMap;
     private ConcurrentHashMap<SzeibernaetickIdentifier, Class<? extends ISzeibernaetick>> idMap;
@@ -31,7 +31,8 @@ public class SzeibernaetickMapper {
      * @param cap
      * @param item
      */
-    public void register(Class<? extends ISzeibernaetick> cap, SzeibernaetickBase item) {
+    public void register(Class<? extends ISzeibernaetick> cap, SzeibernaetickBase item,
+            SzeibernaetickIdentifier identifier) {
         Log.log("Trying to register Capability!", LogType.DEBUG, LogType.SETUP);
         if(this.itemMap.put(cap, item) != null) {
             Log.log("Overrode Szeibernaetick Item Mapping for " + item.getRegistryName() + "/" + cap.toString()
@@ -39,20 +40,11 @@ public class SzeibernaetickMapper {
                     LogType.SETUP, LogType.ERROR);
         }
 
-        try {
-            SzeibernaetickIdentifier identifier = cap.newInstance().getIdentifier();
-            Log.log("Registering Capability!", LogType.INFO, LogType.SETUP);
-            if(this.idMap.put(identifier, cap) != null) {
-                Log.log("Overrode Szeibernaetick Capability Mapping for " + item.getRegistryName() + "/" + identifier
-                        + "! This should not happen. Did you register 2 Capabilities with identical Identifiers?",
-                        LogType.SETUP, LogType.ERROR);
-            }
-        }
-        catch(InstantiationException e) {
-            e.printStackTrace();
-        }
-        catch(IllegalAccessException e) {
-            e.printStackTrace();
+        Log.log("Registering Capability!", LogType.INFO, LogType.SETUP);
+        if(this.idMap.put(identifier, cap) != null) {
+            Log.log("Overrode Szeibernaetick Capability Mapping for " + item.getRegistryName() + "/" + identifier
+                    + "! This should not happen. Did you register 2 Capabilities with identical Identifiers?",
+                    LogType.SETUP, LogType.ERROR);
         }
     }
 

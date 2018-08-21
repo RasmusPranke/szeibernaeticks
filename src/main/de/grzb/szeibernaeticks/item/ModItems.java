@@ -11,7 +11,7 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.MetalBones;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.RadarEyes;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.RunnersLegs;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.SyntheticEyes;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.ISzeibernaetickEventHandler;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.ISzeibernaetickEventHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;

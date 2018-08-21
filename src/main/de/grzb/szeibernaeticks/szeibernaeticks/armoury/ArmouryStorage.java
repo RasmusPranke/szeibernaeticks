@@ -43,7 +43,7 @@ public class ArmouryStorage implements IStorage<IArmoury> {
             NBTTagCompound compound = tag.getCompoundTag(s);
             if(compound != null) {
                 ISzeibernaetick cap;
-                Class<? extends ISzeibernaetick> capClass = SzeibernaetickMapper.instance
+                Class<? extends ISzeibernaetick> capClass = SzeibernaetickMapper.INSTANCE
                         .getCapabilityFromIdentifier(SzeibernaetickIdentifier.fromString(s));
                 try {
                     cap = capClass.newInstance();

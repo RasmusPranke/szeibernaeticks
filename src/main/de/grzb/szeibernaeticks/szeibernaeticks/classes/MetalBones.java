@@ -9,8 +9,9 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.MetalBonesHandler;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.MetalBonesHandler;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -87,5 +88,6 @@ public class MetalBones implements ISzeibernaetick {
 
     public static void register(ModItems.RegisteringMethod method) {
         Item.item = method.registerSzeibernaetick(new Item(), MetalBonesHandler.class);
+        SzeibernaetickMapper.INSTANCE.register(MetalBones.class, Item.item, identifier);
     }
 }

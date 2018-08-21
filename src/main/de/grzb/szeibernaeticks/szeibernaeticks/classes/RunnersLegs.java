@@ -9,11 +9,12 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.RunnersLegsHandler;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.RunnersLegsHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -45,7 +46,7 @@ public class RunnersLegs implements ISzeibernaetick, IEnergyConsumer {
         }
 
         @Override
-        public boolean IsActive() {
+        public boolean isActive() {
             return true;
         }
 
@@ -182,5 +183,6 @@ public class RunnersLegs implements ISzeibernaetick, IEnergyConsumer {
 
     public static void register(ModItems.RegisteringMethod method) {
         Item.item = method.registerSzeibernaetick(new Item(), RunnersLegsHandler.class);
+        SzeibernaetickMapper.INSTANCE.register(RunnersLegs.class, Item.item, identifier);
     }
 }

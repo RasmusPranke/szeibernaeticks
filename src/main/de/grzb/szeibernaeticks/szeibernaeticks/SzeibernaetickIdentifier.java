@@ -8,7 +8,7 @@ public final class SzeibernaetickIdentifier {
 
     public SzeibernaetickIdentifier(String modId, String identifier) {
         if(!StringUtils.isAlphanumeric(identifier)) {
-            throw new IllegalArgumentException("The identifier must be alphanumeric!");
+            throw new IllegalArgumentException("The identifier must be alphanumeric! " + identifier + " is not.");
         }
         this.modId = modId;
         this.identifier = identifier;
@@ -24,7 +24,7 @@ public final class SzeibernaetickIdentifier {
 
     public static SzeibernaetickIdentifier fromString(String from) {
         int divideAt = from.lastIndexOf(':');
-        String identifier = from.substring(divideAt) + 1;
+        String identifier = from.substring(divideAt + 1);
         String modId = from.substring(0, divideAt);
         // The : is removed
         return new SzeibernaetickIdentifier(modId, identifier);
@@ -37,5 +37,10 @@ public final class SzeibernaetickIdentifier {
             return modId.equals(sId.modId) && identifier.equals(sId.identifier);
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return getFullIdentifier().hashCode();
     }
 }

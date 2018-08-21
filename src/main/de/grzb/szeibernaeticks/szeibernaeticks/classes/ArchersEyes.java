@@ -11,12 +11,13 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.entity.EntityArrowFake;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.event.ArchersEyesHandler;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.ArchersEyesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
@@ -208,5 +209,6 @@ public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
 
     public static void register(ModItems.RegisteringMethod method) {
         Item.item = method.registerSzeibernaetick(new Item(), ArchersEyesHandler.class);
+        SzeibernaetickMapper.INSTANCE.register(ArchersEyes.class, Item.item, identifier);
     }
 }
