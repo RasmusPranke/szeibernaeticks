@@ -1,8 +1,7 @@
-package main.de.grzb.szeibernaeticks.item.szeibernaetick;
+package main.de.grzb.szeibernaeticks.item;
 
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
-import main.de.grzb.szeibernaeticks.item.ItemBase;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
@@ -42,23 +41,23 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
  * Denotes an Item usable as an Szeibernaetick.<br>
  * <br>
  * To add a new Szeibernaetick, you need a) an Item implementing
- * SzeibernaetickBase, b) any Method of adding it to the
+ * SzeibernaetickItem, b) any Method of adding it to the
  * ISzeibernaetickStorageCapability of an Entity and c) an
  * ISzeibernaetickEventHandler implementing the functionality via
  * EventSubscriptions.
  *
  * @author DemRat
  */
-public abstract class SzeibernaetickBase extends ItemBase {
+public abstract class SzeibernaetickItem extends ItemBase {
 
     @CapabilityInject(ISzeibernaetick.class)
     public static final Capability<ISzeibernaetick> SZEIBER_CAP = null;
 
-    public SzeibernaetickBase(SzeibernaetickIdentifier name) {
+    public SzeibernaetickItem(SzeibernaetickIdentifier name) {
         this(name, CreativeTabs.COMBAT);
     }
 
-    public SzeibernaetickBase(SzeibernaetickIdentifier name, CreativeTabs tab) {
+    public SzeibernaetickItem(SzeibernaetickIdentifier name, CreativeTabs tab) {
         super(name.getShortIdentifier());
         Log.log("[SzeiberBase] Creating Item of type: " + this.getClass(), LogType.DEBUG, LogType.INSTANTIATION,
                 LogType.ITEM);

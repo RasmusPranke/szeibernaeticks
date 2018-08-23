@@ -8,13 +8,12 @@ import io.netty.util.internal.ConcurrentSet;
 import main.de.grzb.szeibernaeticks.Szeibernaeticks;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
-import main.de.grzb.szeibernaeticks.item.ModItems;
-import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
+import main.de.grzb.szeibernaeticks.item.SzeibernaetickItem;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
@@ -27,9 +26,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
+@Szeibernaetick(handler = ConductiveVeinsHandler.class, item = ConductiveVeins.Item.class)
 public class ConductiveVeins implements ISzeibernaetick {
-    private static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
+    @Szeibernaetick.Identifier
+    public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
             "CondVeins");
+    @Szeibernaetick.ItemInject
+    public static final Item item = null;
     private static final BodyPart bodyPart = BodyPart.VEINS;
     private ConcurrentSet<IEnergyProducer> producers = new ConcurrentSet<IEnergyProducer>();
     private ConcurrentSet<IEnergyConsumer> consumers = new ConcurrentSet<IEnergyConsumer>();
@@ -203,7 +206,7 @@ public class ConductiveVeins implements ISzeibernaetick {
         return stack;
     }
 
-    public static class Item extends SzeibernaetickBase {
+    public static class Item extends SzeibernaetickItem {
         public static Item item;
 
         public Item() {
@@ -238,10 +241,5 @@ public class ConductiveVeins implements ISzeibernaetick {
     @Override
     public SzeibernaetickIdentifier getIdentifier() {
         return identifier;
-    }
-
-    public static void register(ModItems.RegisteringMethod method) {
-        Item.item = method.registerSzeibernaetick(new Item(), ConductiveVeinsHandler.class);
-        SzeibernaetickMapper.INSTANCE.register(ConductiveVeins.class, Item.item, identifier);
     }
 }

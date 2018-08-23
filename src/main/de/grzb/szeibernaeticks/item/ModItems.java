@@ -2,19 +2,8 @@ package main.de.grzb.szeibernaeticks.item;
 
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
-import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.ArchersEyes;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.ConductiveVeins;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.DynamoJoints;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.GeneratorStomach;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.MetalBones;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.RadarEyes;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.RunnersLegs;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.SyntheticEyes;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.ISzeibernaetickEventHandler;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -26,11 +15,6 @@ import net.minecraftforge.registries.IForgeRegistry;
  * @see main.de.grzb.szeibernaeticks.CommonProxy CommonProxy
  */
 public final class ModItems {
-    public interface RegisteringMethod {
-        <T extends SzeibernaetickBase> T registerSzeibernaetick(T item,
-                Class<? extends ISzeibernaetickEventHandler> handler);
-    }
-
     public static IForgeRegistry<Item> itemRegistry;
 
     public static ItemBase ingot_copper;
@@ -46,17 +30,9 @@ public final class ModItems {
 
         Log.log("Initiating items!", LogType.DEBUG, LogType.SETUP);
         ingot_copper = register(new ItemBase("ingot_copper").setCreativeTab(CreativeTabs.MATERIALS));
-        MetalBones.register(ModItems::registerSzeibernaetick);
-        ConductiveVeins.register(ModItems::registerSzeibernaetick);
-        DynamoJoints.register(ModItems::registerSzeibernaetick);
-        SyntheticEyes.register(ModItems::registerSzeibernaetick);
-        GeneratorStomach.register(ModItems::registerSzeibernaetick);
-        ArchersEyes.register(ModItems::registerSzeibernaetick);
-        RadarEyes.register(ModItems::registerSzeibernaetick);
-        RunnersLegs.register(ModItems::registerSzeibernaetick);
     }
 
-    private static <T extends Item> T register(T item) {
+    public static <T extends Item> T register(T item) {
         ModItems.itemRegistry.register(item);
 
         if(item instanceof ItemBase) {
@@ -64,21 +40,5 @@ public final class ModItems {
         }
 
         return item;
-    }
-
-    private static <T extends SzeibernaetickBase> T registerSzeibernaetick(T item,
-            Class<? extends ISzeibernaetickEventHandler> handler) {
-        try {
-            MinecraftForge.EVENT_BUS.register(handler.newInstance());
-        }
-        catch(InstantiationException e) {
-            Log.log("Could not instantiate the Handler for this Szeibernaetick.", LogType.EXCEPTION);
-            Log.logThrowable(e);
-        }
-        catch(IllegalAccessException e) {
-            Log.log("Could not access the Handler for this Szeibernaetick.", LogType.EXCEPTION);
-            Log.logThrowable(e);
-        }
-        return register(item);
     }
 }

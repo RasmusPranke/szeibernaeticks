@@ -3,13 +3,12 @@ package main.de.grzb.szeibernaeticks.szeibernaeticks.classes;
 import java.util.ArrayList;
 
 import main.de.grzb.szeibernaeticks.Szeibernaeticks;
-import main.de.grzb.szeibernaeticks.item.ModItems;
-import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
+import main.de.grzb.szeibernaeticks.item.SzeibernaetickItem;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.MetalBonesHandler;
 import net.minecraft.item.ItemStack;
@@ -21,9 +20,13 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
  *
  * @author DemRat
  */
+@Szeibernaetick(handler = { MetalBonesHandler.class }, item = MetalBones.Item.class)
 public class MetalBones implements ISzeibernaetick {
-    private static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
+    @Szeibernaetick.Identifier
+    public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
             "MetalBones");
+    @Szeibernaetick.ItemInject
+    public static final Item item = null;
     private static final BodyPart bodyPart = BodyPart.BONES;
     private int damage;
 
@@ -60,13 +63,11 @@ public class MetalBones implements ISzeibernaetick {
 
     @Override
     public ItemStack generateItemStack() {
-        ItemStack stack = new ItemStack(Item.item);
+        ItemStack stack = new ItemStack(item);
         return stack;
     }
 
-    public static class Item extends SzeibernaetickBase {
-        public static Item item;
-
+    public static class Item extends SzeibernaetickItem {
         public Item() {
             super(identifier);
         }
@@ -84,10 +85,5 @@ public class MetalBones implements ISzeibernaetick {
             }
             return new SzeibernaetickCapabilityProvider(cap);
         }
-    }
-
-    public static void register(ModItems.RegisteringMethod method) {
-        Item.item = method.registerSzeibernaetick(new Item(), MetalBonesHandler.class);
-        SzeibernaetickMapper.INSTANCE.register(MetalBones.class, Item.item, identifier);
     }
 }

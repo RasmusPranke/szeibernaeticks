@@ -5,13 +5,12 @@ import java.util.ArrayList;
 import main.de.grzb.szeibernaeticks.Szeibernaeticks;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
-import main.de.grzb.szeibernaeticks.item.ModItems;
-import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
+import main.de.grzb.szeibernaeticks.item.SzeibernaetickItem;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
@@ -23,9 +22,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
+@Szeibernaetick(handler = { SyntheticEyesHandler.class }, item = SyntheticEyes.Item.class)
 public class SyntheticEyes implements ISzeibernaetick, IEnergyConsumer {
-    private static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
+    @Szeibernaetick.Identifier
+    public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
             "SynthEyes");
+    @Szeibernaetick.ItemInject
+    public static final Item item = null;
     private static final BodyPart bodyPart = BodyPart.EYES;
     private int maxStorage = 20;
     private int storage = 0;
@@ -172,16 +175,13 @@ public class SyntheticEyes implements ISzeibernaetick, IEnergyConsumer {
 
     @Override
     public ItemStack generateItemStack() {
-        ItemStack stack = new ItemStack(Item.item);
+        ItemStack stack = new ItemStack(item);
         return stack;
     }
 
-    public static class Item extends SzeibernaetickBase {
-        public static Item item;
-
+    public static class Item extends SzeibernaetickItem {
         public Item() {
             super(identifier);
-            item = this;
         }
 
         @Override
@@ -197,10 +197,5 @@ public class SyntheticEyes implements ISzeibernaetick, IEnergyConsumer {
             }
             return new SzeibernaetickCapabilityProvider(cap);
         }
-    }
-
-    public static void register(ModItems.RegisteringMethod method) {
-        Item.item = method.registerSzeibernaetick(new Item(), SyntheticEyesHandler.class);
-        SzeibernaetickMapper.INSTANCE.register(SyntheticEyes.class, Item.item, identifier);
     }
 }

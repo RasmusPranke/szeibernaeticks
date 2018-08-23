@@ -1,5 +1,7 @@
 package main.de.grzb.szeibernaeticks;
 
+import java.io.InvalidClassException;
+
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.render.FakeRenderFactory;
@@ -22,7 +24,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 public class ClientProxy extends CommonProxy {
 
     @Override
-    public void preInit(FMLPreInitializationEvent e) {
+    public void preInit(FMLPreInitializationEvent e) throws InvalidClassException {
         super.preInit(e);
 
         Log.log("Client side Preinit!", LogType.SETUP);

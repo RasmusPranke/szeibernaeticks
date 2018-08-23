@@ -5,13 +5,12 @@ import java.util.ArrayList;
 import main.de.grzb.szeibernaeticks.Szeibernaeticks;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
-import main.de.grzb.szeibernaeticks.item.ModItems;
-import main.de.grzb.szeibernaeticks.item.szeibernaetick.SzeibernaetickBase;
+import main.de.grzb.szeibernaeticks.item.SzeibernaetickItem;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent;
@@ -27,6 +26,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import squeek.applecore.api.food.FoodEvent;
 import squeek.applecore.api.food.FoodValues;
 
+@Szeibernaetick(handler = { GeneratorStomachHandler.class }, item = GeneratorStomach.Item.class)
 public class GeneratorStomach implements ISzeibernaetick, IEnergyProducer, IEnergyConsumer {
 
     private class OnOffSwitch extends Switch.BooleanSwitch {
@@ -73,8 +73,11 @@ public class GeneratorStomach implements ISzeibernaetick, IEnergyProducer, IEner
         }
     }
 
-    private static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
+    @Szeibernaetick.Identifier
+    public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
             "GeneratorStomach");
+    @Szeibernaetick.ItemInject
+    public static final Item item = null;
     private static final BodyPart bodyPart = BodyPart.STOMACH;
     private static final int foodMultiplier = 10;
     private static final int saturationMultiplier = 10;
@@ -243,13 +246,11 @@ public class GeneratorStomach implements ISzeibernaetick, IEnergyProducer, IEner
 
     @Override
     public ItemStack generateItemStack() {
-        ItemStack stack = new ItemStack(Item.item);
+        ItemStack stack = new ItemStack(item);
         return stack;
     }
 
-    public static class Item extends SzeibernaetickBase {
-        public static Item item;
-
+    public static class Item extends SzeibernaetickItem {
         public Item() {
             super(identifier);
         }
@@ -267,11 +268,6 @@ public class GeneratorStomach implements ISzeibernaetick, IEnergyProducer, IEner
             }
             return new SzeibernaetickCapabilityProvider(cap);
         }
-    }
-
-    public static void register(ModItems.RegisteringMethod method) {
-        Item.item = method.registerSzeibernaetick(new Item(), GeneratorStomachHandler.class);
-        SzeibernaetickMapper.INSTANCE.register(GeneratorStomach.class, Item.item, identifier);
     }
 
     public void setPlayer(EntityPlayer player) {

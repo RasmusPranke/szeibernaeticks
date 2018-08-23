@@ -1,5 +1,7 @@
 package main.de.grzb.szeibernaeticks;
 
+import java.io.InvalidClassException;
+
 import main.de.grzb.szeibernaeticks.block.ModBlocks;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
@@ -8,8 +10,9 @@ import main.de.grzb.szeibernaeticks.item.ModItems;
 import main.de.grzb.szeibernaeticks.networking.GuiMessage;
 import main.de.grzb.szeibernaeticks.networking.NetworkWrapper;
 import main.de.grzb.szeibernaeticks.networking.SzeiberCapMessage;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityStorage;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityStorage;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickInit;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.Armoury;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryAttacher;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryStorage;
@@ -39,13 +42,14 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 public class CommonProxy {
 
-    public void preInit(FMLPreInitializationEvent e) {
+    public void preInit(FMLPreInitializationEvent e) throws InvalidClassException {
         Szeibernaeticks.setLogger(e.getModLog());
         Log.getLogger().setForgeLogger(e.getModLog());
 
         Log.log("PreInit!", LogType.SETUP, LogType.INFO);
         ModItems.init();
         ModBlocks.init();
+        SzeibernaetickInit.init();
         ModTileEntities.init();
 
         NetworkWrapper.INSTANCE.registerMessage(SzeiberCapMessage.SzeiberCapMessageHandler.class,
@@ -67,7 +71,8 @@ public class CommonProxy {
         NetworkRegistry.INSTANCE.registerGuiHandler(Szeibernaeticks.instance, new GuiProxy());
 
         CapabilityManager.INSTANCE.register(IArmoury.class, new ArmouryStorage(), Armoury::new);
-        CapabilityManager.INSTANCE.register(ISzeibernaetick.class, new SzeibernaetickCapabilityStorage(), DummyDefault::new);
+        CapabilityManager.INSTANCE.register(ISzeibernaetick.class, new SzeibernaetickCapabilityStorage(),
+                DummyDefault::new);
     }
 
     public void postInit(FMLPostInitializationEvent e) {
