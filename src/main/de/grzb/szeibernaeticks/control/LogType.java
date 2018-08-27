@@ -19,80 +19,111 @@ public enum LogType {
     /**
      * General Information about the loading and structure of the mod.
      */
-    INFO(DebugConfig.INFO_ENABLED),
+    INFO(),
     /**
      * Errors during Mod execution.
      */
-    ERROR(DebugConfig.ERROR_ENABLED),
+    ERROR(),
     /**
      * Information concerning Exceptions. USE
      * {@code Szeibernaeticks.getLogger().exception()} INSTEAD UNLESS YOU HAVE A
      * GOOD REASON.
      */
-    EXCEPTION(DebugConfig.EXCEPTION_ENABLED),
+    EXCEPTION(),
     /**
      * Information concerning the inital loading of the mod.
      */
-    SETUP(DebugConfig.SETUP_ENABLED),
+    SETUP(),
     /**
      * General Information about Items.
      */
-    ITEM(DebugConfig.ITEM_ENABLED),
+    ITEM(),
     /**
      * Information concerning Szeibernaetick Capabilities.
      */
-    SZEIBER_CAP(DebugConfig.SZEIBER_CAP_ENABLED),
+    SZEIBER_CAP(),
     /**
      * Information concerning Szeibernaetick Event Handlers.
      */
-    SZEIBER_HANDLER(DebugConfig.SZEIBER_HANDLER_ENABLED),
+    SZEIBER_HANDLER(),
     /**
      * Information concerning Szeiberneatick Armouries.
      */
-    SZEIBER_ARM(DebugConfig.SZEIBER_ARM_ENABLED),
+    SZEIBER_ARM(),
     /**
      * Information concerning Szeiberneatick Energy.
      */
-    SZEIBER_ENERGY(DebugConfig.SZEIBER_ENERGY_ENABLED),
+    SZEIBER_ENERGY(),
     /**
      * Information concerning Commands.
      */
-    COMMAND(DebugConfig.COMMAND_ENABLED),
+    COMMAND(),
     /**
      * Logs that produce output that cannot be prevented by the player, i.e. all
      * logs that produce output indefinitely in a newly generated world without
      * mobs or anything else.
      */
-    SPAMMY(DebugConfig.SPAMMY_ENABLED),
+    SPAMMY(),
     /**
      * Information about the inner workings of the mod.
      */
-    DEBUG(DebugConfig.DEBUG_ENABLED),
+    DEBUG(),
     /**
      * Information concerning the instantiation of classes.
      */
-    INSTANTIATION(DebugConfig.INSTANTIATION_ENABLED),
+    INSTANTIATION(),
     /**
      * Specific Information. For example, exact values used in a method.
      */
-    SPECIFIC(DebugConfig.SPECIFIC_ENABLED),
+    SPECIFIC(),
     /**
      * Information concerning rendering.
      */
-    RENDER(DebugConfig.RENDER_ENABLED),
+    RENDER(),
     /**
      * Temporary debug messages.
      */
-    TEMP(new Boolean(true));
+    TEMP();
 
-    private Boolean isEnabled;
-
-    LogType(Boolean isEnabled) {
-        this.isEnabled = isEnabled;
+    LogType() {
     }
 
     public boolean enabled() {
-        return isEnabled;
+        switch(this) {
+            case COMMAND:
+                return DebugConfig.COMMAND_ENABLED;
+            case DEBUG:
+                return DebugConfig.DEBUG_ENABLED;
+            case ERROR:
+                return DebugConfig.ERROR_ENABLED;
+            case EXCEPTION:
+                return DebugConfig.EXCEPTION_ENABLED;
+            case INFO:
+                return DebugConfig.INFO_ENABLED;
+            case INSTANTIATION:
+                return DebugConfig.INSTANTIATION_ENABLED;
+            case ITEM:
+                return DebugConfig.ITEM_ENABLED;
+            case RENDER:
+                return DebugConfig.RENDER_ENABLED;
+            case SETUP:
+                return DebugConfig.SETUP_ENABLED;
+            case SPAMMY:
+                return DebugConfig.SPAMMY_ENABLED;
+            case SPECIFIC:
+                return DebugConfig.SPECIFIC_ENABLED;
+            case SZEIBER_ARM:
+                return DebugConfig.SZEIBER_ARM_ENABLED;
+            case SZEIBER_CAP:
+                return DebugConfig.SZEIBER_CAP_ENABLED;
+            case SZEIBER_ENERGY:
+                return DebugConfig.SZEIBER_ENERGY_ENABLED;
+            case SZEIBER_HANDLER:
+                return DebugConfig.SZEIBER_HANDLER_ENABLED;
+            case TEMP:
+            default:
+                return true;
+        }
     }
 
     @Config(modid = Szeibernaeticks.MOD_ID, name = "MessageConfig", type = Type.INSTANCE)
