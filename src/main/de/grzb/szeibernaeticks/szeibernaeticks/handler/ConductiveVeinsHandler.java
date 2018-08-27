@@ -6,10 +6,11 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.IArmoury;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.classes.ConductiveVeins;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyEvent.Demand;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyEvent.Supply;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SzeibernaetickInstalledEvent;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.event.SzeibernaetickRemovedEvent;
+import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ConductiveVeinsHandler implements ISzeibernaetickEventHandler {
@@ -69,29 +70,28 @@ public class ConductiveVeinsHandler implements ISzeibernaetickEventHandler {
     }
 
     @SubscribeEvent
-    public void onEnergyConsumptionEvent(EnergyConsumptionEvent e) {
-        Log.log("[ConVeinsHandler] An EnergyConsumptionEvent happened", LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_HANDLER, LogType.SPAMMY);
-        IArmoury armoury = e.getEntity().getCapability(ArmouryProvider.ARMOURY_CAP, null);
-        ConductiveVeins veins = (ConductiveVeins) armoury.getSzeibernaetick(ConductiveVeins.class);
+    public void onEnergyConsumptionEvent(Supply e) {
+        ConductiveVeins veins = getVeins(e.getEntity());
         if(veins != null) {
-            Log.log("[ConVeinsHandler] An EnergyConsumptionEvent is being handled.", LogType.DEBUG,
-                    LogType.SZEIBER_ENERGY, LogType.SZEIBER_HANDLER, LogType.SPAMMY);
-            veins.handleConsumptionEvent(e);
+            Log.log("[ConVeinsHandler] A Supply is being handled.", LogType.DEBUG, LogType.SZEIBER_ENERGY,
+                    LogType.SZEIBER_HANDLER, LogType.SPAMMY);
+            veins.handleSupplyEvent(e);
         }
     }
 
     @SubscribeEvent
-    public void onEnergyProductionEvent(EnergyProductionEvent e) {
-        Log.log("[ConVeinsHandler] An EnergyProductionEvent happened", LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_HANDLER, LogType.SPAMMY);
-        IArmoury armoury = e.getEntity().getCapability(ArmouryProvider.ARMOURY_CAP, null);
-        ConductiveVeins veins = (ConductiveVeins) armoury.getSzeibernaetick(ConductiveVeins.class);
+    public void onEnergyProductionEvent(Demand e) {
+        ConductiveVeins veins = getVeins(e.getEntity());
         if(veins != null) {
-            Log.log("[ConVeinsHandler] An EnergyProductionEvent is being handled.", LogType.DEBUG,
-                    LogType.SZEIBER_ENERGY, LogType.SZEIBER_HANDLER, LogType.SPAMMY);
-            veins.handleProductionEvent(e);
+            Log.log("[ConVeinsHandler] A Demand is being handled.", LogType.DEBUG, LogType.SZEIBER_ENERGY,
+                    LogType.SZEIBER_HANDLER, LogType.SPAMMY);
+            veins.handleDemandEvent(e);
         }
 
+    }
+
+    private static ConductiveVeins getVeins(Entity e) {
+        IArmoury armoury = e.getCapability(ArmouryProvider.ARMOURY_CAP, null);
+        return (ConductiveVeins) armoury.getSzeibernaetick(ConductiveVeins.class);
     }
 }

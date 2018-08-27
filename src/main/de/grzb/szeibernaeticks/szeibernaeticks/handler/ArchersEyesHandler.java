@@ -15,7 +15,6 @@ public class ArchersEyesHandler implements ISzeibernaetickEventHandler {
 
     @SubscribeEvent
     public void onDrawBow(LivingEntityUseItemEvent.Tick e) {
-        Log.log("[ArchEyesHandler] Recieving event!", LogType.DEBUG, LogType.SPAMMY, LogType.SZEIBER_HANDLER);
         ItemStack itemstack = e.getItem();
         if(itemstack.getItem() instanceof ItemBow) {
             Log.log("[ArchEyesHandler] Is Bow!", LogType.DEBUG, LogType.SPAMMY, LogType.SZEIBER_HANDLER);
@@ -25,8 +24,7 @@ public class ArchersEyesHandler implements ISzeibernaetickEventHandler {
 
             if(armoury != null) {
                 Log.log("[ArchEyesHandler] Found Armory!", LogType.DEBUG, LogType.SPAMMY, LogType.SZEIBER_HANDLER);
-                ArchersEyes eyes = (ArchersEyes) armoury
-                        .getSzeibernaetick(ArchersEyes.class);
+                ArchersEyes eyes = (ArchersEyes) armoury.getSzeibernaetick(ArchersEyes.class);
 
                 if(eyes != null) {
                     Log.log("[ArchEyesHandler] Found Eyes!", LogType.DEBUG, LogType.SPAMMY, LogType.SZEIBER_HANDLER);

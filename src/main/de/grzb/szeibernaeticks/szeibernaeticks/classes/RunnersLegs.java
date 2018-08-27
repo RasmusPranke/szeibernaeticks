@@ -10,9 +10,8 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyEvent.Demand;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyUser;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.RunnersLegsHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -21,7 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 @Szeibernaetick(handler = { RunnersLegsHandler.class }, item = RunnersLegs.Item.class)
-public class RunnersLegs implements ISzeibernaetick, IEnergyConsumer {
+public class RunnersLegs extends EnergyUserBase implements ISzeibernaetick, IEnergyUser {
     @Szeibernaetick.Identifier
     public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
             "RunnersLegs");
@@ -94,39 +93,12 @@ public class RunnersLegs implements ISzeibernaetick, IEnergyConsumer {
 
     public boolean grantSpeed(Entity target) {
         boolean granted = false;
-
-        if(this.storage >= this.consumption) {
-            this.storage -= this.consumption;
+        Demand demand = new Demand(target, consumption);
+        MinecraftForge.EVENT_BUS.post(demand);
+        if(demand.isMet()) {
             granted = true;
         }
-
-        if(this.storage < this.consumption) {
-            int missingEnergy = this.maxStorage - this.storage;
-            EnergyConsumptionEvent event = new EnergyConsumptionEvent(target, missingEnergy);
-            MinecraftForge.EVENT_BUS.post(event);
-            this.storage += (missingEnergy - event.getRemainingAmount());
-        }
-
         return granted;
-    }
-
-    @Override
-    public EnergyPriority currentConsumptionPrio() {
-        return EnergyPriority.FILL_ASAP;
-    }
-
-    @Override
-    public boolean canStillConsume() {
-        return this.storage < this.maxStorage;
-    }
-
-    @Override
-    public int consume() {
-        if(this.canStillConsume()) {
-            this.storage++;
-            return 1;
-        }
-        return 0;
     }
 
     @Override
@@ -137,23 +109,6 @@ public class RunnersLegs implements ISzeibernaetick, IEnergyConsumer {
     @Override
     public int getCurrentEnergy() {
         return storage;
-    }
-
-    @Override
-    public int store(int amountToStore) {
-        int consumed = 0;
-
-        while(consume() != 0) {
-            consumed++;
-        }
-
-        return consumed;
-    }
-
-    @Override
-    public int retrieve(int amountToRetrieve) {
-
-        return 0;
     }
 
     @Override

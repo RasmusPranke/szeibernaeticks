@@ -1,6 +1,7 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import main.de.grzb.szeibernaeticks.Szeibernaeticks;
 import main.de.grzb.szeibernaeticks.control.Log;
@@ -12,10 +13,11 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyEvent.Supply;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyProducer;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPromise;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPromise.Production;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyUser;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.GeneratorStomachHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -27,7 +29,7 @@ import squeek.applecore.api.food.FoodEvent;
 import squeek.applecore.api.food.FoodValues;
 
 @Szeibernaetick(handler = { GeneratorStomachHandler.class }, item = GeneratorStomach.Item.class)
-public class GeneratorStomach implements ISzeibernaetick, IEnergyProducer, IEnergyConsumer {
+public class GeneratorStomach extends EnergyUserBase implements ISzeibernaetick, IEnergyUser {
 
     private class OnOffSwitch extends Switch.BooleanSwitch {
 
@@ -82,8 +84,6 @@ public class GeneratorStomach implements ISzeibernaetick, IEnergyProducer, IEner
     private static final int foodMultiplier = 10;
     private static final int saturationMultiplier = 10;
     private EntityPlayer player; // Required to modify players food values
-    private int storage;
-    private int maxStorage;
     private boolean isActive = true;
     private boolean isOn = true;
     private OnOffSwitch onOff = new OnOffSwitch(this, "OnOff");
@@ -118,79 +118,7 @@ public class GeneratorStomach implements ISzeibernaetick, IEnergyProducer, IEner
         return bodyPart;
     }
 
-    // IEnergyConsumer Implementation
-
-    @Override
-    public EnergyPriority currentConsumptionPrio() {
-        return EnergyPriority.EMPTY_ASAP;
-    }
-
-    @Override
-    public boolean canStillConsume() {
-        return this.storage < this.maxStorage;
-    }
-
-    @Override
-    public int consume() {
-        Log.log("[GenStomach] GenStomach attempting to consume energy!", LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_CAP, LogType.SPAMMY);
-        if(this.canStillConsume()) {
-            this.storage++;
-            Log.log("[GenStomach] GenStomach consuming energy! Now storing: " + this.storage, LogType.DEBUG,
-                    LogType.SZEIBER_ENERGY, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            return 1;
-        }
-        return 0;
-    }
-
-    // IEnergyProducer Implementation
-
-    @Override
-    public EnergyPriority currentProductionPriority() {
-        return EnergyPriority.EMPTY_ASAP;
-    }
-
-    private boolean isStorageEmpty() {
-        return storage == 0;
-    }
-
-    private boolean canConsumeFood() {
-        if(isOn && isActive && player != null) {
-            return player.getFoodStats().getFoodLevel() > 0;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean canStillProduce() {
-        return !isStorageEmpty() || canConsumeFood();
-    }
-
-    @Override
-    public int produceAdHoc() {
-        Log.log("[GenStomach] GenStomach attempting to produce energy!", LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_CAP, LogType.SPAMMY);
-        if(isStorageEmpty()) {
-            if(canConsumeFood()) {
-                FoodStats playerFood = player.getFoodStats();
-                int foodLevel = playerFood.getFoodLevel();
-                storage += foodMultiplier;
-                playerFood.setFoodLevel(foodLevel - 1);
-            }
-        }
-
-        if(!isStorageEmpty()) {
-            this.storage--;
-            Log.log("[GenStomach] GenStomach produced energy! Remaining storage: " + this.storage, LogType.DEBUG,
-                    LogType.SZEIBER_ENERGY, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            return 1;
-        }
-
-        return 0;
-    }
-
-    public void produce(FoodEvent.GetPlayerFoodValues event) {
-        Log.log("[GenStomach] Trying to produce energy: " + isOn, LogType.TEMP);
+    public void convertFood(FoodEvent.GetPlayerFoodValues event) {
         if(isOn) {
             FoodValues values = event.foodValues;
             int energyProduced = values.hunger * foodMultiplier
@@ -199,7 +127,7 @@ public class GeneratorStomach implements ISzeibernaetick, IEnergyProducer, IEner
 
             Log.log("[GenStomach] Producing energy: " + energyProduced, LogType.DEBUG, LogType.SZEIBER_ENERGY,
                     LogType.SZEIBER_CAP);
-            EnergyProductionEvent production = new EnergyProductionEvent(event.player, energyProduced);
+            Supply production = new Supply(event.player, energyProduced);
             MinecraftForge.EVENT_BUS.post(production);
         }
     }
@@ -212,28 +140,6 @@ public class GeneratorStomach implements ISzeibernaetick, IEnergyProducer, IEner
     @Override
     public int getCurrentEnergy() {
         return storage;
-    }
-
-    @Override
-    public int store(int amountToStore) {
-        int consumed = 0;
-
-        while(consume() != 0) {
-            consumed++;
-        }
-
-        return consumed;
-    }
-
-    @Override
-    public int retrieve(int amountToRetrieve) {
-        int retrieved = 0;
-
-        while(produceAdHoc() != 0) {
-            retrieved++;
-        }
-
-        return retrieved;
     }
 
     @Override
@@ -272,6 +178,55 @@ public class GeneratorStomach implements ISzeibernaetick, IEnergyProducer, IEner
 
     public void setPlayer(EntityPlayer player) {
         this.player = player;
+    }
+
+    @Override
+    public Collection<Production> promiseProduction() {
+        Collection<EnergyPromise.Production> list = super.promiseProduction();
+        list.add(new EnergyPromise.Production(EnergyPriority.BODILY_HARM) {
+            private FoodStats playerFood = player.getFoodStats();
+
+            @Override
+            public int getLimit() {
+                int saturationLimit = (int) (playerFood.getSaturationLevel() * saturationMultiplier);
+                int foodLimit = playerFood.getFoodLevel() * foodMultiplier;
+                // Saturation level can be negative!
+                if(saturationLimit < 0) {
+                    saturationLimit = 0;
+                }
+                return foodLimit + saturationLimit;
+            }
+
+            @Override
+            public void satisfy(int amount) {
+                int production = 0;
+
+                Log.log("[GenStomach] Requested amount: " + amount, LogType.DEBUG, LogType.SZEIBER_ENERGY,
+                        LogType.SZEIBER_CAP);
+
+                float saturationConsumption = (float) Math.ceil(((double) amount) / saturationMultiplier);
+                // Saturation level can be negative!
+                if(playerFood.getSaturationLevel() < saturationConsumption) {
+                    saturationConsumption = playerFood.getSaturationLevel();
+                }
+                if(saturationConsumption < 0) {
+                    saturationConsumption = 0;
+                }
+                production += saturationConsumption * saturationMultiplier;
+
+                int foodConsumption = (int) Math.ceil((((double) amount) - production) / foodMultiplier);
+                production += foodConsumption * foodMultiplier;
+
+                MinecraftForge.EVENT_BUS.post(new Supply(player, production - amount));
+                playerFood.setFoodSaturationLevel(playerFood.getSaturationLevel() - saturationConsumption);
+                Log.log("[GenStomach] Consuming Saturation: " + saturationConsumption, LogType.DEBUG,
+                        LogType.SZEIBER_ENERGY, LogType.SZEIBER_CAP);
+                playerFood.setFoodLevel(playerFood.getFoodLevel() - foodConsumption);
+                Log.log("[GenStomach] Consuming Saturation: " + foodConsumption, LogType.DEBUG, LogType.SZEIBER_ENERGY,
+                        LogType.SZEIBER_CAP);
+            }
+        });
+        return list;
     }
 
 }

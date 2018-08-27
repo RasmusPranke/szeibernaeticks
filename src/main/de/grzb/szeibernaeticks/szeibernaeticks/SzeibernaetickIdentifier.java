@@ -31,6 +31,11 @@ public final class SzeibernaetickIdentifier {
     }
 
     @Override
+    public String toString() {
+        return getFullIdentifier();
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if(obj instanceof SzeibernaetickIdentifier) {
             SzeibernaetickIdentifier sId = (SzeibernaetickIdentifier) obj;

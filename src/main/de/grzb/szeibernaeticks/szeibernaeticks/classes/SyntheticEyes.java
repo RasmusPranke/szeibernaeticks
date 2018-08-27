@@ -12,9 +12,8 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyEvent.Demand;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyUser;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.SyntheticEyesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -23,15 +22,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 @Szeibernaetick(handler = { SyntheticEyesHandler.class }, item = SyntheticEyes.Item.class)
-public class SyntheticEyes implements ISzeibernaetick, IEnergyConsumer {
+public class SyntheticEyes extends EnergyUserBase implements ISzeibernaetick, IEnergyUser {
     @Szeibernaetick.Identifier
     public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
             "SynthEyes");
     @Szeibernaetick.ItemInject
     public static final Item item = null;
     private static final BodyPart bodyPart = BodyPart.EYES;
-    private int maxStorage = 20;
-    private int storage = 0;
     private int consumption = 5;
     private boolean running = true;
 
@@ -99,51 +96,13 @@ public class SyntheticEyes implements ISzeibernaetick, IEnergyConsumer {
     }
 
     public boolean grantVision(Entity target) {
-        Log.log("[SynthEyesCap] SynthEyes attempting to grant vision!", LogType.DEBUG, LogType.SZEIBER_CAP,
-                LogType.SPAMMY);
         boolean granted = false;
-
-        if(this.storage >= this.consumption) {
-            Log.log("[SynthEyesCap] SynthEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            this.storage -= this.consumption;
+        Demand demand = new Demand(target, consumption);
+        MinecraftForge.EVENT_BUS.post(demand);
+        if(demand.isMet()) {
             granted = true;
         }
-
-        if(this.storage < this.consumption) {
-            Log.log("[SynthEyesCap] SynthEyes missing Energy, posting Event.", LogType.DEBUG, LogType.SZEIBER_CAP,
-                    LogType.SPAMMY);
-            int missingEnergy = this.maxStorage - this.storage;
-            EnergyConsumptionEvent event = new EnergyConsumptionEvent(target, missingEnergy);
-            MinecraftForge.EVENT_BUS.post(event);
-            Log.log("[SynthEyesCap] Event granted " + (missingEnergy - event.getRemainingAmount()) + " Energy.",
-                    LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            this.storage += (missingEnergy - event.getRemainingAmount());
-        }
-
         return granted;
-    }
-
-    @Override
-    public EnergyPriority currentConsumptionPrio() {
-        return EnergyPriority.FILL_ASAP;
-    }
-
-    @Override
-    public boolean canStillConsume() {
-        return this.storage < this.maxStorage;
-    }
-
-    @Override
-    public int consume() {
-        Log.log("[SynthEyesCap] SynthEyes attempting to consume energy!", LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_CAP, LogType.SPAMMY);
-        if(this.canStillConsume()) {
-            this.storage++;
-            Log.log("[SynthEyesCap] SynthEyes consuming energy! Now storing: " + this.storage, LogType.DEBUG,
-                    LogType.SZEIBER_ENERGY, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            return 1;
-        }
-        return 0;
     }
 
     @Override
@@ -154,23 +113,6 @@ public class SyntheticEyes implements ISzeibernaetick, IEnergyConsumer {
     @Override
     public int getCurrentEnergy() {
         return storage;
-    }
-
-    @Override
-    public int store(int amountToStore) {
-        int consumed = 0;
-
-        while(consume() != 0) {
-            consumed++;
-        }
-
-        return consumed;
-    }
-
-    @Override
-    public int retrieve(int amountToRetrieve) {
-
-        return 0;
     }
 
     @Override

@@ -12,9 +12,8 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyEvent.Demand;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyUser;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.entity.EntityArrowFake;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.ArchersEyesHandler;
 import net.minecraft.entity.Entity;
@@ -26,7 +25,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent.Tick;
 
 @Szeibernaetick(handler = { ArchersEyesHandler.class, }, item = ArchersEyes.Item.class)
-public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
+public class ArchersEyes extends EnergyUserBase implements ISzeibernaetick, IEnergyUser {
     @Szeibernaetick.Identifier
     public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
             "ArchEyes");
@@ -34,8 +33,6 @@ public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
     public static final SzeibernaetickItem item = null;
 
     private static final BodyPart bodyPart = BodyPart.EYES;
-    private int maxStorage = 20;
-    private int storage = 0;
     private int consumption = 1;
     private int ticksRemaining = 0;
     private boolean running = true;
@@ -88,22 +85,13 @@ public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
             Entity shooter = e.getEntity();
 
             // Grant vision if necessary
-            if(ticksRemaining <= 0 && this.storage >= this.consumption) {
+            if(ticksRemaining <= 0) {
                 Log.log("[ArchEyesCap] ArchEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-                this.storage -= this.consumption;
-                ticksRemaining += 20;
-            }
-
-            // Restock energy if necessary
-            if(this.storage < this.consumption) {
-                Log.log("[ArchEyesCap] ArchEyes missing Energy, posting Event.", LogType.DEBUG, LogType.SZEIBER_CAP,
-                        LogType.SPAMMY);
-                int missingEnergy = this.maxStorage - this.storage;
-                EnergyConsumptionEvent event = new EnergyConsumptionEvent(shooter, missingEnergy);
-                MinecraftForge.EVENT_BUS.post(event);
-                Log.log("[ArchEyesCap] Event granted " + (missingEnergy - event.getRemainingAmount()) + " Energy.",
-                        LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-                this.storage += (missingEnergy - event.getRemainingAmount());
+                Demand demand = new Demand(shooter, consumption);
+                MinecraftForge.EVENT_BUS.post(demand);
+                if(demand.isMet()) {
+                    ticksRemaining += 20;
+                }
             }
 
             // Grant vision if it is activated
@@ -131,55 +119,6 @@ public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
                 }
             }
         }
-    }
-
-    @Override
-    public EnergyPriority currentConsumptionPrio() {
-        return EnergyPriority.FILL_ASAP;
-    }
-
-    @Override
-    public boolean canStillConsume() {
-        return storage < maxStorage;
-    }
-
-    @Override
-    public int consume() {
-        Log.log("[ArchEyesCap] ArchEyes attempting to consume energy!", LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_CAP, LogType.SPAMMY);
-        if(canStillConsume()) {
-            storage++;
-            Log.log("[ArchEyesCap] ArchEyes consuming energy! Now storing: " + storage, LogType.DEBUG,
-                    LogType.SZEIBER_ENERGY, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            return 1;
-        }
-        return 0;
-    }
-
-    @Override
-    public int getMaxEnergy() {
-        return maxStorage;
-    }
-
-    @Override
-    public int getCurrentEnergy() {
-        return storage;
-    }
-
-    @Override
-    public int store(int amountToStore) {
-        int consumed = 0;
-
-        while(consume() != 0) {
-            consumed++;
-        }
-
-        return consumed;
-    }
-
-    @Override
-    public int retrieve(int amountToRetrieve) {
-        return 0;
     }
 
     @Override

@@ -19,7 +19,7 @@ public class GeneratorStomachHandler implements ISzeibernaetickEventHandler {
         if(armoury != null) {
             GeneratorStomach genStomach = (GeneratorStomach) armoury.getSzeibernaetick(GeneratorStomach.class);
             if(genStomach != null) {
-                genStomach.produce(event);
+                genStomach.convertFood(event);
             }
         }
     }

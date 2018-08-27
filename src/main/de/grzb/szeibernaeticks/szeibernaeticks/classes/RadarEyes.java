@@ -12,9 +12,8 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyEvent.Demand;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyUser;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.RadarEyesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,15 +24,13 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
 @Szeibernaetick(handler = { RadarEyesHandler.class }, item = RadarEyes.Item.class)
-public class RadarEyes implements ISzeibernaetick, IEnergyConsumer {
+public class RadarEyes extends EnergyUserBase implements ISzeibernaetick, IEnergyUser {
     @Szeibernaetick.Identifier
     public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
             "RadEyes");
     @Szeibernaetick.ItemInject
     public static final Item item = null;
     private static final BodyPart bodyPart = BodyPart.EYES;
-    private int maxStorage = 20;
-    private int storage = 0;
     private int consumption = 1;
     private int ticksRemaining = 0;
     private boolean active = false;
@@ -103,33 +100,22 @@ public class RadarEyes implements ISzeibernaetick, IEnergyConsumer {
     }
 
     public void grantVision(LivingUpdateEvent e) {
-        Log.log("[RadEyesCap] ArchEyes attempting to grant vision!", LogType.DEBUG, LogType.SZEIBER_CAP,
-                LogType.SPAMMY);
 
         Entity shooter = e.getEntity();
 
         // Grant vision if necessary
-        if(ticksRemaining <= 0 && this.storage >= this.consumption) {
-            Log.log("[RadEyesCap] ArchEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            this.storage -= this.consumption;
-            ticksRemaining += 20;
-        }
-
-        // Restock energy if necessary
-        if(this.storage < this.consumption) {
-            Log.log("[RadEyesCap] Missing Energy, posting Event.", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            int missingEnergy = this.maxStorage - this.storage;
-            EnergyConsumptionEvent event = new EnergyConsumptionEvent(shooter, missingEnergy);
-            MinecraftForge.EVENT_BUS.post(event);
-            Log.log("[RadEyesCap] Event granted " + (missingEnergy - event.getRemainingAmount()) + " Energy.",
-                    LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            this.storage += (missingEnergy - event.getRemainingAmount());
+        if(ticksRemaining <= 0) {
+            Demand demand = new Demand(shooter, consumption);
+            MinecraftForge.EVENT_BUS.post(demand);
+            if(demand.isMet()) {
+                Log.log("[RadEyesCap] ArchEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
+                ticksRemaining += 20;
+            }
         }
 
         // Check whether vision should still be granted
         if(ticksRemaining > 0) {
             --ticksRemaining;
-            Log.log("[RadEyesCap] Ticks Remaining!.", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
             active = true;
         }
         else {
@@ -141,35 +127,10 @@ public class RadarEyes implements ISzeibernaetick, IEnergyConsumer {
         if(shooter.world.isRemote) {
             for(Entity oneOfAll : shooter.getEntityWorld().getLoadedEntityList()) {
                 if(oneOfAll instanceof EntityLivingBase) {
-                    Log.log("[RadEyesCap] Found Living Entity of type: " + oneOfAll.getClass(), LogType.DEBUG,
-                            LogType.SZEIBER_CAP, LogType.SPAMMY);
                     ((EntityLivingBase) oneOfAll).setGlowing(active);
                 }
             }
         }
-    }
-
-    @Override
-    public EnergyPriority currentConsumptionPrio() {
-        return EnergyPriority.FILL_ASAP;
-    }
-
-    @Override
-    public boolean canStillConsume() {
-        return storage < maxStorage;
-    }
-
-    @Override
-    public int consume() {
-        Log.log("[ArchEyesCap] ArchEyes attempting to consume energy!", LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_CAP, LogType.SPAMMY);
-        if(canStillConsume()) {
-            storage++;
-            Log.log("[ArchEyesCap] ArchEyes consuming energy! Now storing: " + storage, LogType.DEBUG,
-                    LogType.SZEIBER_ENERGY, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            return 1;
-        }
-        return 0;
     }
 
     @Override
@@ -180,22 +141,6 @@ public class RadarEyes implements ISzeibernaetick, IEnergyConsumer {
     @Override
     public int getCurrentEnergy() {
         return storage;
-    }
-
-    @Override
-    public int store(int amountToStore) {
-        int consumed = 0;
-
-        while(consume() != 0) {
-            consumed++;
-        }
-
-        return consumed;
-    }
-
-    @Override
-    public int retrieve(int amountToRetrieve) {
-        return 0;
     }
 
     @Override

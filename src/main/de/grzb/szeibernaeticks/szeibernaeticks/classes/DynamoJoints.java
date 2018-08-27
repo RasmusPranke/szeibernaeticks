@@ -12,10 +12,8 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyProducer;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyEvent.Supply;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyUser;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.DynamoJointsHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -24,7 +22,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 @Szeibernaetick(handler = { DynamoJointsHandler.class }, item = DynamoJoints.Item.class)
-public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyProducer {
+public class DynamoJoints extends EnergyUserBase implements ISzeibernaetick, IEnergyUser {
     @Szeibernaetick.Identifier
     public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
             "DynamoJoints");
@@ -32,8 +30,6 @@ public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyPr
     public static final Item item = null;
     private static final BodyPart bodyPart = BodyPart.JOINTS;
 
-    private int maxStorage = 100;
-    private int storage = 0;
     private float fractionalStorage = 0;
 
     @Override
@@ -68,56 +64,6 @@ public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyPr
         return bodyPart;
     }
 
-    // IEnergyConsumer Implementation
-
-    @Override
-    public EnergyPriority currentConsumptionPrio() {
-        return EnergyPriority.EMPTY_FAST;
-    }
-
-    @Override
-    public boolean canStillConsume() {
-        return this.storage < this.maxStorage;
-    }
-
-    @Override
-    public int consume() {
-        Log.log("[DynJointsCap] DynJoints attempting to consume energy!", LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_CAP, LogType.SPAMMY);
-        if(this.canStillConsume()) {
-            this.storage++;
-            Log.log("[DynJointsCap] DynJoints consuming energy! Now storing: " + this.storage, LogType.DEBUG,
-                    LogType.SZEIBER_ENERGY, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            return 1;
-        }
-        return 0;
-    }
-
-    // IEnergyProducer Implementation
-
-    @Override
-    public EnergyPriority currentProductionPriority() {
-        return EnergyPriority.EMPTY_FAST;
-    }
-
-    @Override
-    public boolean canStillProduce() {
-        return this.storage > 0;
-    }
-
-    @Override
-    public int produceAdHoc() {
-        Log.log("[DynJointsCap] DynJoints attempting to produce energy!", LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_CAP, LogType.SPAMMY);
-        if(this.canStillProduce()) {
-            this.storage--;
-            Log.log("[DynJointsCap] DynJoints produced energy! Remaining storage: " + this.storage, LogType.DEBUG,
-                    LogType.SZEIBER_ENERGY, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            return 1;
-        }
-        return 0;
-    }
-
     /**
      * Produces energy based on the given fall height.
      *
@@ -127,45 +73,19 @@ public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyPr
      *            The entity this happend on
      * @return The amount of energy produced.
      */
-    public int produce(float height, Entity entity) {
+    public void produce(float height, Entity entity) {
         this.fractionalStorage += height / 4;
         int energyProduced = 0;
         if(this.fractionalStorage > 0) {
             energyProduced = (int) this.fractionalStorage;
+
+            Log.log("[DynJointsCap] Producing energy: " + energyProduced, LogType.DEBUG, LogType.SZEIBER_ENERGY,
+                    LogType.SZEIBER_CAP);
+            Supply supply = new Supply(entity, energyProduced);
+            MinecraftForge.EVENT_BUS.post(supply);
+
             this.fractionalStorage = this.fractionalStorage - energyProduced;
         }
-        Log.log("[DynJointsCap] Producing energy: " + energyProduced, LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_CAP);
-        EnergyProductionEvent production = new EnergyProductionEvent(entity, energyProduced);
-        MinecraftForge.EVENT_BUS.post(production);
-
-        return energyProduced;
-    }
-
-    @Override
-    public int getMaxEnergy() {
-        return maxStorage;
-    }
-
-    @Override
-    public int getCurrentEnergy() {
-        return storage;
-    }
-
-    @Override
-    public int store(int amountToStore) {
-        int consumed = 0;
-
-        while(consume() != 0) {
-            consumed++;
-        }
-
-        return consumed;
-    }
-
-    @Override
-    public int retrieve(int amountToRetrieve) {
-        return 0;
     }
 
     @Override
