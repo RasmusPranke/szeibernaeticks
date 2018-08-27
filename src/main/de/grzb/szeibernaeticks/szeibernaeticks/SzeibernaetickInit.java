@@ -1,6 +1,5 @@
 package main.de.grzb.szeibernaeticks.szeibernaeticks;
 
-import java.io.InvalidClassException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
@@ -19,10 +18,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.EnumHelper;
 
 public class SzeibernaetickInit {
-    // TODO: This entire class is disgusting
-    private static final String baseError = "Could not %s the %s for the Szeibernaetick %s.";
+    private static final String baseError = "Could not %s the %s.";
 
-    public static void init() throws InvalidClassException {
+    public static void init() throws InvalidSzeibernaetickException {
         loadSzeibernaetick(MetalBones.class);
         loadSzeibernaetick(ConductiveVeins.class);
         loadSzeibernaetick(DynamoJoints.class);
@@ -33,7 +31,8 @@ public class SzeibernaetickInit {
         loadSzeibernaetick(RunnersLegs.class);
     }
 
-    public static void loadSzeibernaetick(Class<? extends ISzeibernaetick> szeiberClass) throws InvalidClassException {
+    public static void loadSzeibernaetick(Class<? extends ISzeibernaetick> szeiberClass)
+            throws InvalidSzeibernaetickException {
         Szeibernaetick at = szeiberClass.getAnnotation(Szeibernaetick.class);
 
         SzeibernaetickIdentifier identifier = findContentOfStaticFieldWithTypeAndAnnotation(szeiberClass,
@@ -44,8 +43,8 @@ public class SzeibernaetickInit {
         registerSzeibernaetick(szeiberClass, at.item(), at.handler(), identifier, itemInjectField);
     }
 
-    private static Field findFieldWithAnnotation(Class<?> source, Class<? extends Annotation> at)
-            throws InvalidClassException {
+    private static Field findFieldWithAnnotation(Class<? extends ISzeibernaetick> source,
+            Class<? extends Annotation> at) throws InvalidSzeibernaetickException {
         Field ret = null;
         Field[] fields = source.getDeclaredFields();
         for(Field f : fields) {
@@ -54,21 +53,20 @@ public class SzeibernaetickInit {
                     ret = f;
                 }
                 else {
-                    throw new InvalidClassException(
-                            "Class " + source.getName() + " contains multiple fields with annotation " + at.toString());
+                    throw new InvalidSzeibernaetickException(source,
+                            "Contains multiple fields with annotation " + at.toString());
                 }
             }
         }
 
         if(ret == null) {
-            throw new InvalidClassException(
-                    "Class " + source.getName() + " contains no fields with annotation " + at.toString());
+            throw new InvalidSzeibernaetickException(source, "Contains no fields with annotation " + at.toString());
         }
         return ret;
     }
 
-    private static <T> T findContentOfStaticFieldWithTypeAndAnnotation(Class<?> source, Class<T> type,
-            Class<? extends Annotation> at) throws InvalidClassException {
+    private static <T> T findContentOfStaticFieldWithTypeAndAnnotation(Class<? extends ISzeibernaetick> source,
+            Class<T> type, Class<? extends Annotation> at) throws InvalidSzeibernaetickException {
         T ret = null;
         Field f = findFieldWithAnnotation(source, at);
         if(type.isAssignableFrom(f.getType())) {
@@ -80,14 +78,13 @@ public class SzeibernaetickInit {
                 ret = warningWrapper;
             }
             catch(IllegalArgumentException | IllegalAccessException e) {
-                throw new InvalidClassException("Class " + source.getName() + " contains a field with annotation "
-                        + at.toString() + " of type " + type.getName() + " that is not public and static.");
+                throw new InvalidSzeibernaetickException(source, "Contains a field with annotation " + at.toString()
+                        + " of type " + type.getName() + " that is not public and static.");
             }
         }
         else {
-            throw new InvalidClassException("Class " + source.getName() + " contains a field with annotation "
-                    + at.toString() + " that is not of type " + type.getName() + " but is instead "
-                    + f.getType().getName() + ".");
+            throw new InvalidSzeibernaetickException(source, "Contains a field with annotation " + at.toString()
+                    + " that is not of type " + type.getName() + " but is instead " + f.getType().getName() + ".");
         }
 
         return ret;
@@ -95,7 +92,7 @@ public class SzeibernaetickInit {
 
     private static void registerSzeibernaetick(Class<? extends ISzeibernaetick> szeiber,
             Class<? extends SzeibernaetickItem> itemClass, Class<? extends ISzeibernaetickEventHandler>[] handlers,
-            SzeibernaetickIdentifier identifier, Field itemInjectField) throws InvalidClassException {
+            SzeibernaetickIdentifier identifier, Field itemInjectField) throws InvalidSzeibernaetickException {
 
         int i = 0;
         try {
@@ -106,11 +103,11 @@ public class SzeibernaetickInit {
             }
         }
         catch(InstantiationException e) {
-            throw new InvalidClassException(String.format(baseError, "instantiate",
-                    "handler " + handlers[i].getSimpleName(), szeiber.getSimpleName()));
+            throw new InvalidSzeibernaetickException(szeiber,
+                    String.format(baseError, "instantiate", "handler " + handlers[i].getSimpleName()));
         }
         catch(IllegalAccessException e) {
-            throw new InvalidClassException(
+            throw new InvalidSzeibernaetickException(szeiber,
                     String.format(baseError, "access", "handler " + handlers[i].getName(), szeiber.getName()));
         }
 
@@ -119,12 +116,12 @@ public class SzeibernaetickInit {
             itemInstance = itemClass.newInstance();
         }
         catch(InstantiationException e) {
-            throw new InvalidClassException(
-                    String.format(baseError, "instantiate", "item " + itemClass.getName(), szeiber.getName()));
+            throw new InvalidSzeibernaetickException(szeiber,
+                    String.format(baseError, "instantiate", "item " + itemClass.getName()));
         }
         catch(IllegalAccessException e) {
-            throw new InvalidClassException(
-                    String.format(baseError, "access", "item " + itemClass.getName(), szeiber.getName()));
+            throw new InvalidSzeibernaetickException(szeiber,
+                    String.format(baseError, "access", "item " + itemClass.getName()));
         }
 
         ModItems.register(itemInstance);
@@ -134,8 +131,8 @@ public class SzeibernaetickInit {
             EnumHelper.setFailsafeFieldValue(itemInjectField, null, itemInstance);
         }
         catch(Exception e) {
-            throw new InvalidClassException(
-                    String.format(baseError, "inject", "item " + itemClass.getName(), szeiber.getName()));
+            throw new InvalidSzeibernaetickException(szeiber,
+                    String.format(baseError, "inject", "item " + itemClass.getName()));
         }
     }
 

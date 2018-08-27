@@ -1,7 +1,5 @@
 package main.de.grzb.szeibernaeticks;
 
-import java.io.InvalidClassException;
-
 import main.de.grzb.szeibernaeticks.block.ModBlocks;
 import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
@@ -11,6 +9,7 @@ import main.de.grzb.szeibernaeticks.networking.GuiMessage;
 import main.de.grzb.szeibernaeticks.networking.NetworkWrapper;
 import main.de.grzb.szeibernaeticks.networking.SzeiberCapMessage;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.InvalidSzeibernaetickException;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityStorage;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickInit;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.armoury.Armoury;
@@ -26,6 +25,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.fml.common.LoaderExceptionModCrash;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -42,14 +42,19 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 public class CommonProxy {
 
-    public void preInit(FMLPreInitializationEvent e) throws InvalidClassException {
+    public void preInit(FMLPreInitializationEvent e) {
         Szeibernaeticks.setLogger(e.getModLog());
         Log.getLogger().setForgeLogger(e.getModLog());
 
         Log.log("PreInit!", LogType.SETUP, LogType.INFO);
         ModItems.init();
         ModBlocks.init();
-        SzeibernaetickInit.init();
+        try {
+            SzeibernaetickInit.init();
+        }
+        catch(InvalidSzeibernaetickException invalidSzeiberException) {
+            throw new LoaderExceptionModCrash("Error while initializing Szeibernaeticks!", invalidSzeiberException);
+        }
         ModTileEntities.init();
 
         NetworkWrapper.INSTANCE.registerMessage(SzeiberCapMessage.SzeiberCapMessageHandler.class,
