@@ -13,8 +13,8 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 /**
- * Represents a Szeibernaetick in item form. There must always exist a single
- * implementation for each Szeibernaetick.
+ * Represents a SzeiberClass in item form. There must always exist a single
+ * implementation for each SzeiberClass.
  * 
  * @author DemRat
  *

@@ -38,7 +38,7 @@ public class Armoury implements IArmoury {
 
         if(this.bodyMap.get(szeiber.getBodyPart()) == null) {
             Log.log("Body Part is not used.", LogType.DEBUG, LogType.SZEIBER_ARM, LogType.SPECIFIC);
-            // Tell anyone interested that you are installing a Szeibernaetick
+            // Tell anyone interested that you are installing a SzeiberClass
             MinecraftForge.EVENT_BUS.post(new SzeibernaetickInstalledEvent(this, szeiber));
             this.bodyMap.put(szeiber.getBodyPart(), szeiber);
             this.classMap.put(szeiber.getClass(), szeiber);

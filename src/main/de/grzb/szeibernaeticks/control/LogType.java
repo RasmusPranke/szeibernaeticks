@@ -39,11 +39,11 @@ public enum LogType {
      */
     ITEM(),
     /**
-     * Information concerning Szeibernaetick Capabilities.
+     * Information concerning SzeiberClass Capabilities.
      */
     SZEIBER_CAP(),
     /**
-     * Information concerning Szeibernaetick Event Handlers.
+     * Information concerning SzeiberClass Event Handlers.
      */
     SZEIBER_HANDLER(),
     /**

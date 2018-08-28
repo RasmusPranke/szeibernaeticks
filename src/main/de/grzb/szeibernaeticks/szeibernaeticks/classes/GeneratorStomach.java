@@ -9,7 +9,7 @@ import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.item.SzeibernaetickItem;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeiberClass;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
@@ -28,7 +28,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import squeek.applecore.api.food.FoodEvent;
 import squeek.applecore.api.food.FoodValues;
 
-@Szeibernaetick(handler = { GeneratorStomachHandler.class }, item = GeneratorStomach.Item.class)
+@SzeiberClass(handler = { GeneratorStomachHandler.class }, item = GeneratorStomach.Item.class)
 public class GeneratorStomach extends EnergyUserBase implements ISzeibernaetick, IEnergyUser {
 
     private class OnOffSwitch extends Switch.BooleanSwitch {
@@ -75,10 +75,10 @@ public class GeneratorStomach extends EnergyUserBase implements ISzeibernaetick,
         }
     }
 
-    @Szeibernaetick.Identifier
+    @SzeiberClass.Identifier
     public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
             "GeneratorStomach");
-    @Szeibernaetick.ItemInject
+    @SzeiberClass.ItemInject
     public static final Item item = null;
     private static final BodyPart bodyPart = BodyPart.STOMACH;
     private static final int foodMultiplier = 10;

@@ -6,7 +6,7 @@ import main.de.grzb.szeibernaeticks.Szeibernaeticks;
 import main.de.grzb.szeibernaeticks.item.SzeibernaetickItem;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeiberClass;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
@@ -20,12 +20,12 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
  *
  * @author DemRat
  */
-@Szeibernaetick(handler = { MetalBonesHandler.class }, item = MetalBones.Item.class)
+@SzeiberClass(handler = { MetalBonesHandler.class }, item = MetalBones.Item.class)
 public class MetalBones implements ISzeibernaetick {
-    @Szeibernaetick.Identifier
+    @SzeiberClass.Identifier
     public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
             "MetalBones");
-    @Szeibernaetick.ItemInject
+    @SzeiberClass.ItemInject
     public static final Item item = null;
     private static final BodyPart bodyPart = BodyPart.BONES;
     private int damage;

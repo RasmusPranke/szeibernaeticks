@@ -6,7 +6,7 @@ import main.de.grzb.szeibernaeticks.Szeibernaeticks;
 import main.de.grzb.szeibernaeticks.item.SzeibernaetickItem;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeiberClass;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
@@ -19,12 +19,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-@Szeibernaetick(handler = { RunnersLegsHandler.class }, item = RunnersLegs.Item.class)
+@SzeiberClass(handler = { RunnersLegsHandler.class }, item = RunnersLegs.Item.class)
 public class RunnersLegs extends EnergyUserBase implements ISzeibernaetick, IEnergyUser {
-    @Szeibernaetick.Identifier
+    @SzeiberClass.Identifier
     public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
             "RunnersLegs");
-    @Szeibernaetick.ItemInject
+    @SzeiberClass.ItemInject
     public static final Item item = null;
     private static final BodyPart bodyPart = BodyPart.LEGS;
     private int maxStorage = 20;

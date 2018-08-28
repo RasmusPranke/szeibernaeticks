@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 //TODO: Add alternate quickbar for this. RenderGameOverlayEvent!
 
 /**
- * Stores and retrieves the data behind a Szeibernaetick.
+ * Stores and retrieves the data behind a SzeiberClass.
  *
  *
  * Structure of an NBTTag containing a Szeibernaeticks Tag: { OtherTag : Value,
@@ -60,7 +60,7 @@ public interface ISzeibernaetick {
     BodyPart getBodyPart();
 
     /**
-     * Returns a list of Switches representing all the ways the Szeibernaetick
+     * Returns a list of Switches representing all the ways the SzeiberClass
      * can be adjusted ad-hoc.
      * 
      * @return

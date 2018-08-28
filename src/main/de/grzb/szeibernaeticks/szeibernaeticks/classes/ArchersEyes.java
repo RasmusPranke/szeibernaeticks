@@ -8,7 +8,7 @@ import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.item.SzeibernaetickItem;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeiberClass;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
@@ -24,12 +24,12 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent.Tick;
 
-@Szeibernaetick(handler = { ArchersEyesHandler.class, }, item = ArchersEyes.Item.class)
+@SzeiberClass(handler = { ArchersEyesHandler.class, }, item = ArchersEyes.Item.class)
 public class ArchersEyes extends EnergyUserBase implements ISzeibernaetick, IEnergyUser {
-    @Szeibernaetick.Identifier
+    @SzeiberClass.Identifier
     public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
             "ArchEyes");
-    @Szeibernaetick.ItemInject
+    @SzeiberClass.ItemInject
     public static final SzeibernaetickItem item = null;
 
     private static final BodyPart bodyPart = BodyPart.EYES;

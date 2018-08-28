@@ -15,7 +15,7 @@ public class SzeibernaetickRemovedEvent extends Event {
         this.armoury = armoury;
         this.removedSzeibernaetick = removedSzeibernaetick;
 
-        Log.log("Removed Szeibernaetick: " + removedSzeibernaetick.getIdentifier(), LogType.INFO);
+        Log.log("Removed SzeiberClass: " + removedSzeibernaetick.getIdentifier(), LogType.INFO);
     }
 
 }

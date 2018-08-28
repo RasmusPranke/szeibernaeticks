@@ -18,7 +18,7 @@ import main.de.grzb.szeibernaeticks.szeibernaeticks.handler.ISzeibernaetickEvent
  */
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface Szeibernaetick {
+public @interface SzeiberClass {
     Class<? extends ISzeibernaetickEventHandler>[] handler();
 
     Class<? extends SzeibernaetickItem> item();

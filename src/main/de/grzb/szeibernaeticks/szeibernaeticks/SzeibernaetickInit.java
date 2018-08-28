@@ -33,12 +33,12 @@ public class SzeibernaetickInit {
 
     public static void loadSzeibernaetick(Class<? extends ISzeibernaetick> szeiberClass)
             throws InvalidSzeibernaetickException {
-        Szeibernaetick at = szeiberClass.getAnnotation(Szeibernaetick.class);
+        SzeiberClass at = szeiberClass.getAnnotation(SzeiberClass.class);
 
         SzeibernaetickIdentifier identifier = findContentOfStaticFieldWithTypeAndAnnotation(szeiberClass,
-                SzeibernaetickIdentifier.class, Szeibernaetick.Identifier.class);
+                SzeibernaetickIdentifier.class, SzeiberClass.Identifier.class);
 
-        Field itemInjectField = findFieldWithAnnotation(szeiberClass, Szeibernaetick.ItemInject.class);
+        Field itemInjectField = findFieldWithAnnotation(szeiberClass, SzeiberClass.ItemInject.class);
 
         registerSzeibernaetick(szeiberClass, at.item(), at.handler(), identifier, itemInjectField);
     }

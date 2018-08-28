@@ -16,7 +16,7 @@ import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.item.SzeibernaetickItem;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
-import main.de.grzb.szeibernaeticks.szeibernaeticks.Szeibernaetick;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeiberClass;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
@@ -30,12 +30,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-@Szeibernaetick(handler = ConductiveVeinsHandler.class, item = ConductiveVeins.Item.class)
+@SzeiberClass(handler = ConductiveVeinsHandler.class, item = ConductiveVeins.Item.class)
 public class ConductiveVeins implements ISzeibernaetick {
-    @Szeibernaetick.Identifier
+    @SzeiberClass.Identifier
     public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
             "CondVeins");
-    @Szeibernaetick.ItemInject
+    @SzeiberClass.ItemInject
     public static final Item item = null;
     private static final BodyPart bodyPart = BodyPart.VEINS;
     private ConcurrentSet<IEnergyUser> users = new ConcurrentSet<IEnergyUser>();

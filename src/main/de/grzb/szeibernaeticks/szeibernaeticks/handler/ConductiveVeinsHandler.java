@@ -37,7 +37,7 @@ public class ConductiveVeinsHandler implements ISzeibernaetickEventHandler {
             if(e.armoury.getSzeibernaetick(ConductiveVeins.class) != null) {
                 Log.log("[ConVeinsHandler] Something else was installed and SzeiberVeins exist.", LogType.DEBUG,
                         LogType.SZEIBER_ENERGY, LogType.SZEIBER_HANDLER);
-                // If they are, register the newly installed Szeibernaetick.
+                // If they are, register the newly installed SzeiberClass.
                 ((ConductiveVeins) e.armoury.getSzeibernaetick(ConductiveVeins.class))
                         .register(e.installedSzeibernaetick);
             }
@@ -62,7 +62,7 @@ public class ConductiveVeinsHandler implements ISzeibernaetickEventHandler {
             if(e.armoury.getSzeibernaetick(ConductiveVeins.class) != null) {
                 Log.log("[ConVeinsHandler] Something else was removed and SzeiberVeins exist.", LogType.DEBUG,
                         LogType.SZEIBER_ENERGY, LogType.SZEIBER_HANDLER);
-                // If they are, register the newly installed Szeibernaetick.
+                // If they are, register the newly installed SzeiberClass.
                 ((ConductiveVeins) e.armoury.getSzeibernaetick(ConductiveVeins.class))
                         .unregister(e.removedSzeibernaetick);
             }
