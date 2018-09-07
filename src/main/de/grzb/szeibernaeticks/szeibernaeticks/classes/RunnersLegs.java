@@ -30,21 +30,14 @@ public class RunnersLegs extends EnergyUserBase implements ISzeibernaetick, IEne
     private int maxStorage = 20;
     private int storage = 0;
     private int consumption = 5;
-    private boolean running = true;
+
+    private boolean running() {
+        return onOff.getValue();
+    };
 
     private class OnOffSwitch extends Switch.BooleanSwitch {
         public OnOffSwitch(ISzeibernaetick sourceSzeiber, String name) {
             super(sourceSzeiber, name);
-        }
-
-        @Override
-        protected boolean getValue() {
-            return running;
-        }
-
-        @Override
-        protected void setValue(boolean val) {
-            running = val;
         }
 
         @Override
@@ -54,7 +47,7 @@ public class RunnersLegs extends EnergyUserBase implements ISzeibernaetick, IEne
 
     }
 
-    private Switch onOff = new OnOffSwitch(this, "OnOff");
+    private OnOffSwitch onOff = new OnOffSwitch(this, "OnOff");
 
     @Override
     public Iterable<Switch> getSwitches() {
@@ -70,10 +63,10 @@ public class RunnersLegs extends EnergyUserBase implements ISzeibernaetick, IEne
 
     @Override
     public NBTTagCompound toNBT() {
+        // TODO: Make sure all states are saved in NBT in every szeibernaetick
         NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("storage", this.storage);
         tag.setInteger("maxStorage", this.maxStorage);
-        tag.setBoolean("running", running);
         return tag;
     }
 
@@ -83,7 +76,6 @@ public class RunnersLegs extends EnergyUserBase implements ISzeibernaetick, IEne
         if(nbt.getInteger("maxStorage") > 0) {
             this.maxStorage = nbt.getInteger("maxStorage");
         }
-        this.running = nbt.getBoolean("running");
     }
 
     @Override
@@ -135,5 +127,10 @@ public class RunnersLegs extends EnergyUserBase implements ISzeibernaetick, IEne
             }
             return new SzeibernaetickCapabilityProvider(cap);
         }
+    }
+
+    @Override
+    public String toNiceString() {
+        return "Runners Legs";
     }
 }

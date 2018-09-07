@@ -1,7 +1,5 @@
 package main.de.grzb.szeibernaeticks;
 
-import java.io.InvalidClassException;
-
 import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.fml.common.Mod;
@@ -40,9 +38,7 @@ public class Szeibernaeticks {
     public static CommonProxy proxy;
 
     @EventHandler
-    public void preInit(FMLPreInitializationEvent e) throws InvalidClassException {
-        // TODO: We want the game to crash if the initilization fails, but the
-        // throws are super ugly
+    public void preInit(FMLPreInitializationEvent e) {
         proxy.preInit(e);
     }
 

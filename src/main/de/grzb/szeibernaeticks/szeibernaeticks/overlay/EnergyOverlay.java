@@ -40,7 +40,7 @@ public class EnergyOverlay {
 
         // Draw when the experience bar is drawn.
         if(event.getType() == ElementType.EXPERIENCE) {
-            ActualOverlay overlay = new ActualOverlay(mc);
+            new ActualOverlay(mc);
         }
     }
 }

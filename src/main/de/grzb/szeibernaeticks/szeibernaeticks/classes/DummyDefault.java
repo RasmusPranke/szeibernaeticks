@@ -47,4 +47,9 @@ public class DummyDefault implements ISzeibernaetick {
         return null;
     }
 
+    @Override
+    public String toNiceString() {
+        return "WHY IS THIS HERE";
+    }
+
 }

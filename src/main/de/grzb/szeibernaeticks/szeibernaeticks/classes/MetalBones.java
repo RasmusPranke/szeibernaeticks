@@ -86,4 +86,9 @@ public class MetalBones implements ISzeibernaetick {
             return new SzeibernaetickCapabilityProvider(cap);
         }
     }
+
+    @Override
+    public String toNiceString() {
+        return "Metal Bones";
+    }
 }

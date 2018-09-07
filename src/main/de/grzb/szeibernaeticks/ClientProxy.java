@@ -4,11 +4,13 @@ import main.de.grzb.szeibernaeticks.control.Log;
 import main.de.grzb.szeibernaeticks.control.LogType;
 import main.de.grzb.szeibernaeticks.render.FakeRenderFactory;
 import main.de.grzb.szeibernaeticks.render.RenderBlockMarkerFactory;
+import main.de.grzb.szeibernaeticks.szeibernaeticks.control.SwitchControl;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.entity.EntityArrowFake;
 import main.de.grzb.szeibernaeticks.szeibernaeticks.entity.EntityBlockMarker;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -29,6 +31,7 @@ public class ClientProxy extends CommonProxy {
 
         RenderingRegistry.registerEntityRenderingHandler(EntityArrowFake.class, new FakeRenderFactory());
         RenderingRegistry.registerEntityRenderingHandler(EntityBlockMarker.class, new RenderBlockMarkerFactory());
+        ClientRegistry.registerKeyBinding(SwitchControl.SzeiberHUDKey);
     }
 
     @Override

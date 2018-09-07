@@ -30,21 +30,14 @@ public class SyntheticEyes extends EnergyUserBase implements ISzeibernaetick, IE
     public static final Item item = null;
     private static final BodyPart bodyPart = BodyPart.EYES;
     private int consumption = 5;
-    private boolean running = true;
+
+    private boolean isRunning() {
+        return onOff.getValue();
+    };
 
     private class OnOffSwitch extends Switch.BooleanSwitch {
         public OnOffSwitch(ISzeibernaetick sourceSzeiber, String name) {
             super(sourceSzeiber, name);
-        }
-
-        @Override
-        protected boolean getValue() {
-            return running;
-        }
-
-        @Override
-        protected void setValue(boolean val) {
-            running = val;
         }
 
         @Override
@@ -54,7 +47,7 @@ public class SyntheticEyes extends EnergyUserBase implements ISzeibernaetick, IE
 
     }
 
-    private Switch onOff = new OnOffSwitch(this, "OnOff");
+    private OnOffSwitch onOff = new OnOffSwitch(this, "OnOff");
 
     @Override
     public Iterable<Switch> getSwitches() {
@@ -77,7 +70,6 @@ public class SyntheticEyes extends EnergyUserBase implements ISzeibernaetick, IE
         NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("storage", this.storage);
         tag.setInteger("maxStorage", this.maxStorage);
-        tag.setBoolean("running", running);
         return tag;
     }
 
@@ -87,7 +79,6 @@ public class SyntheticEyes extends EnergyUserBase implements ISzeibernaetick, IE
         if(nbt.getInteger("maxStorage") > 0) {
             this.maxStorage = nbt.getInteger("maxStorage");
         }
-        this.running = nbt.getBoolean("running");
     }
 
     @Override
@@ -96,13 +87,16 @@ public class SyntheticEyes extends EnergyUserBase implements ISzeibernaetick, IE
     }
 
     public boolean grantVision(Entity target) {
-        boolean granted = false;
-        Demand demand = new Demand(target, consumption);
-        MinecraftForge.EVENT_BUS.post(demand);
-        if(demand.isMet()) {
-            granted = true;
+        if(isRunning()) {
+            boolean granted = false;
+            Demand demand = new Demand(target, consumption);
+            MinecraftForge.EVENT_BUS.post(demand);
+            if(demand.isMet()) {
+                granted = true;
+            }
+            return granted;
         }
-        return granted;
+        return false;
     }
 
     @Override
@@ -139,5 +133,10 @@ public class SyntheticEyes extends EnergyUserBase implements ISzeibernaetick, IE
             }
             return new SzeibernaetickCapabilityProvider(cap);
         }
+    }
+
+    @Override
+    public String toNiceString() {
+        return "Synthetic Eyes";
     }
 }

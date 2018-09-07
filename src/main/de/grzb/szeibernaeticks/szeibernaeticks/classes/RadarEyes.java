@@ -34,21 +34,14 @@ public class RadarEyes extends EnergyUserBase implements ISzeibernaetick, IEnerg
     private int consumption = 1;
     private int ticksRemaining = 0;
     private boolean active = false;
-    private boolean running = true;
+
+    private boolean isRunning() {
+        return onOff.getValue();
+    }
 
     private class OnOffSwitch extends Switch.BooleanSwitch {
         public OnOffSwitch(ISzeibernaetick sourceSzeiber, String name) {
             super(sourceSzeiber, name);
-        }
-
-        @Override
-        protected boolean getValue() {
-            return running;
-        }
-
-        @Override
-        protected void setValue(boolean val) {
-            running = val;
         }
 
         @Override
@@ -58,7 +51,7 @@ public class RadarEyes extends EnergyUserBase implements ISzeibernaetick, IEnerg
 
     }
 
-    private Switch onOff = new OnOffSwitch(this, "OnOff");
+    private OnOffSwitch onOff = new OnOffSwitch(this, "OnOff");
 
     @Override
     public Iterable<Switch> getSwitches() {
@@ -100,34 +93,36 @@ public class RadarEyes extends EnergyUserBase implements ISzeibernaetick, IEnerg
     }
 
     public void grantVision(LivingUpdateEvent e) {
+        if(isRunning()) {
+            Entity shooter = e.getEntity();
 
-        Entity shooter = e.getEntity();
-
-        // Grant vision if necessary
-        if(ticksRemaining <= 0) {
-            Demand demand = new Demand(shooter, consumption);
-            MinecraftForge.EVENT_BUS.post(demand);
-            if(demand.isMet()) {
-                Log.log("[RadEyesCap] ArchEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-                ticksRemaining += 20;
+            // Grant vision if necessary
+            if(ticksRemaining <= 0) {
+                Demand demand = new Demand(shooter, consumption);
+                MinecraftForge.EVENT_BUS.post(demand);
+                if(demand.isMet()) {
+                    Log.log("[RadEyesCap] ArchEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP,
+                            LogType.SPAMMY);
+                    ticksRemaining += 20;
+                }
             }
-        }
 
-        // Check whether vision should still be granted
-        if(ticksRemaining > 0) {
-            --ticksRemaining;
-            active = true;
-        }
-        else {
-            active = false;
-        }
+            // Check whether vision should still be granted
+            if(ticksRemaining > 0) {
+                --ticksRemaining;
+                active = true;
+            }
+            else {
+                active = false;
+            }
 
-        // Set Vision accordingly
-        // TODO: This is mega inefficient
-        if(shooter.world.isRemote) {
-            for(Entity oneOfAll : shooter.getEntityWorld().getLoadedEntityList()) {
-                if(oneOfAll instanceof EntityLivingBase) {
-                    ((EntityLivingBase) oneOfAll).setGlowing(active);
+            // Set Vision accordingly
+            // TODO: This is mega inefficient
+            if(shooter.world.isRemote) {
+                for(Entity oneOfAll : shooter.getEntityWorld().getLoadedEntityList()) {
+                    if(oneOfAll instanceof EntityLivingBase) {
+                        ((EntityLivingBase) oneOfAll).setGlowing(active);
+                    }
                 }
             }
         }
@@ -167,5 +162,10 @@ public class RadarEyes extends EnergyUserBase implements ISzeibernaetick, IEnerg
             }
             return new SzeibernaetickCapabilityProvider(cap);
         }
+    }
+
+    @Override
+    public String toNiceString() {
+        return "Radar Eyes";
     }
 }

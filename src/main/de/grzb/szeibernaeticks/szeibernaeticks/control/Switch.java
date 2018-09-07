@@ -31,7 +31,11 @@ public abstract class Switch {
 
     public abstract ResourceLocation GetSprite(int state);
 
+    public abstract String toNiceString();
+
     public static abstract class BooleanSwitch extends Switch {
+        private boolean value;
+
         public BooleanSwitch(ISzeibernaetick sourceSzeiber, String name) {// ,
                                                                           // BufferedImage
                                                                           // falseImage,
@@ -45,23 +49,33 @@ public abstract class Switch {
             return null;
         }
 
-        protected abstract boolean getValue();
+        public final boolean getValue() {
+            return value;
+        }
 
-        protected abstract void setValue(boolean val);
+        public final void setValue(boolean val) {
+            value = val;
+        }
 
         @Override
-        public void press() {
+        public final void press() {
             setValue(!getValue());
         }
 
         @Override
-        public int GetState() {
+        public final int GetState() {
             return getValue() ? 1 : 0;
         }
 
         @Override
-        public void SetState(int state) {
+        public final void SetState(int state) {
             setValue(state % 2 > 0 ? true : false);
+        }
+
+        @Override
+        public String toNiceString() {
+            // TODO: Utilize localization
+            return name + ": " + getValue();
         }
     }
 }

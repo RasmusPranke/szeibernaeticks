@@ -58,7 +58,7 @@ public class ArchersEyes extends EnergyUserBase implements ISzeibernaetick, IEne
         tag.setInteger("storage", storage);
         tag.setInteger("maxStorage", maxStorage);
         tag.setInteger("ticksRemaining", ticksRemaining);
-        tag.setBoolean("running", running);
+        // tag.setBoolean("running", running);
         return tag;
     }
 
@@ -79,9 +79,6 @@ public class ArchersEyes extends EnergyUserBase implements ISzeibernaetick, IEne
 
     public void grantVision(Tick e) {
         if(running) {
-            Log.log("[ArchEyesCap] ArchEyes attempting to grant vision!", LogType.DEBUG, LogType.SZEIBER_CAP,
-                    LogType.SPAMMY);
-
             Entity shooter = e.getEntity();
 
             // Grant vision if necessary
@@ -145,5 +142,10 @@ public class ArchersEyes extends EnergyUserBase implements ISzeibernaetick, IEne
             }
             return new SzeibernaetickCapabilityProvider(cap);
         }
+    }
+
+    @Override
+    public String toNiceString() {
+        return "Archers Eyes";
     }
 }

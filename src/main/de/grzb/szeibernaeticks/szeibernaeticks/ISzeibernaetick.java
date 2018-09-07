@@ -60,8 +60,8 @@ public interface ISzeibernaetick {
     BodyPart getBodyPart();
 
     /**
-     * Returns a list of Switches representing all the ways the SzeiberClass
-     * can be adjusted ad-hoc.
+     * Returns a list of Switches representing all the ways the SzeiberClass can
+     * be adjusted ad-hoc.
      * 
      * @return
      */
@@ -73,4 +73,11 @@ public interface ISzeibernaetick {
      * @return
      */
     ItemStack generateItemStack();
+
+    /**
+     * Returns a human-friendly string name for this Szeibernaetick.
+     * 
+     * @return
+     */
+    String toNiceString();
 }

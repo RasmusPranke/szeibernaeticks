@@ -315,4 +315,9 @@ public class ConductiveVeins implements ISzeibernaetick {
     public SzeibernaetickIdentifier getIdentifier() {
         return identifier;
     }
+
+    @Override
+    public String toNiceString() {
+        return "Conductive Veins";
+    }
 }

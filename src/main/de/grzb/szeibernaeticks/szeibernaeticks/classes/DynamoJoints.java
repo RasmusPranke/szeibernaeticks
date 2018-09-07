@@ -118,4 +118,9 @@ public class DynamoJoints extends EnergyUserBase implements ISzeibernaetick, IEn
             return new SzeibernaetickCapabilityProvider(cap);
         }
     }
+
+    @Override
+    public String toNiceString() {
+        return "Dynamo Joints";
+    }
 }
