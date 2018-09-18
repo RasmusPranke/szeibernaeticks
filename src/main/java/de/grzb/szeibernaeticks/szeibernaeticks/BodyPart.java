@@ -19,12 +19,10 @@ public final class BodyPart {
     private String name;
     private Vector2d location;
 
-    private BodyPart() {
-
-    }
+    private BodyPart() {}
 
     static {
-        bodySet = new ConcurrentSet<BodyPart>();
+        bodySet = new ConcurrentSet<>();
         BONES = createBodyPart("bones", new Vector2d(0, 0));
         LEGS = createBodyPart("legs", new Vector2d(0, 0));
         STOMACH = createBodyPart("stomach", new Vector2d());

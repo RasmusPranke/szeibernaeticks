@@ -18,9 +18,7 @@ public class PotionRejection extends Potion {
     }
 
     @Override
-    public void performEffect(EntityLivingBase entityLivingBaseIn, int amplifier) {
-        super.performEffect(entityLivingBaseIn, amplifier);
-    }
+    public void performEffect(EntityLivingBase entityLivingBaseIn, int amplifier) {}
 
     @Override
     public boolean shouldRenderHUD(PotionEffect effect) {

@@ -104,7 +104,7 @@ public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyPr
      * @param height
      *            How far this fell.
      * @param entity
-     *            The entity this happend on
+     *            The entity this happened on
      * @return The amount of energy produced.
      */
     public int produce(float height, Entity entity) {

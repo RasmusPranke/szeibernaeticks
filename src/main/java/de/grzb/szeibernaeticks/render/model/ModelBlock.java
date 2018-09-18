@@ -18,9 +18,8 @@ public class ModelBlock extends ModelBase {
     }
 
     @Override
-    public void render(Entity parEntity, float partTime, float parSwingSuppess, float par45, float parHeadAngleY,
-            float parHeadAngleX, float par7) {
+    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         Log.log("Rendering Block Model!", LogType.RENDER, LogType.DEBUG);
-        block.render(par7);
+        block.render(scale);
     }
 }

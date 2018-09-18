@@ -12,9 +12,9 @@ public class WrongSzeibernaetickException extends RuntimeException {
     private final Item expected;
     private final Item received;
 
-    public WrongSzeibernaetickException(Item expectedItem, Item recievedItem) {
+    public WrongSzeibernaetickException(Item expectedItem, Item receivedItem) {
         this.expected = expectedItem;
-        this.received = recievedItem;
+        this.received = receivedItem;
     }
 
     @Override

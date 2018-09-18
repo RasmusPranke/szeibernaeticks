@@ -9,7 +9,7 @@ public class FakeRenderFactory implements IRenderFactory<EntityArrowFake> {
 
     @Override
     public Render<EntityArrowFake> createRenderFor(RenderManager manager) {
-        return new FakeRender<EntityArrowFake>(manager);
+        return new FakeRender<>(manager);
     }
 
 }

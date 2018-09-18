@@ -20,6 +20,10 @@ public class Log {
         log(Integer.toString(message), types);
     }
 
+    public static void log(boolean message, LogType... types) {
+        log(Boolean.toString(message), types);
+    }
+
     public static Log getLogger() {
         return logger;
     }
