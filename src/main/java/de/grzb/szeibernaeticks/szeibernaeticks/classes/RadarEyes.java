@@ -1,32 +1,72 @@
 package de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
+import java.util.ArrayList;
+
+import de.grzb.szeibernaeticks.Szeibernaeticks;
 import de.grzb.szeibernaeticks.control.Log;
 import de.grzb.szeibernaeticks.control.LogType;
+import de.grzb.szeibernaeticks.item.SzeibernaetickItem;
 import de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeiberClass;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
+import de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
+import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyEvent.Demand;
+import de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyUser;
+import de.grzb.szeibernaeticks.szeibernaeticks.handler.RadarEyesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 
-public class RadarEyes implements ISzeibernaetick, IEnergyConsumer {
-    private int maxStorage = 20;
-    private int storage = 0;
+@SzeiberClass(handler = { RadarEyesHandler.class }, item = RadarEyes.Item.class)
+public class RadarEyes extends EnergyUserBase implements ISzeibernaetick, IEnergyUser {
+    @SzeiberClass.Identifier
+    public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
+            "RadEyes");
+    @SzeiberClass.ItemInject
+    public static final Item item = null;
+    private static final BodyPart bodyPart = BodyPart.EYES;
     private int consumption = 1;
     private int ticksRemaining = 0;
     private boolean active = false;
+
+    private boolean isRunning() {
+        return onOff.getValue();
+    }
+
+    private class OnOffSwitch extends Switch.BooleanSwitch {
+        public OnOffSwitch(ISzeibernaetick sourceSzeiber, String name) {
+            super(sourceSzeiber, name);
+        }
+
+        @Override
+        public boolean isActive() {
+            return true;
+        }
+
+    }
+
+    private OnOffSwitch onOff = new OnOffSwitch(this, "OnOff");
+
+    @Override
+    public Iterable<Switch> getSwitches() {
+        ArrayList<Switch> list = new ArrayList<Switch>();
+        list.add(onOff);
+        return list;
+    }
 
     {
         Log.log("Creating instance of " + this.getClass(), LogType.SZEIBER_CAP, LogType.DEBUG, LogType.INSTANTIATION);
     }
 
     @Override
-    public String getIdentifier() {
-        return "RadEyes";
+    public SzeibernaetickIdentifier getIdentifier() {
+        return identifier;
     }
 
     @Override
@@ -49,75 +89,43 @@ public class RadarEyes implements ISzeibernaetick, IEnergyConsumer {
 
     @Override
     public BodyPart getBodyPart() {
-        return BodyPart.EYES;
+        return bodyPart;
     }
 
     public void grantVision(LivingUpdateEvent e) {
-        Log.log("[RadEyesCap] ArchEyes attempting to grant vision!", LogType.DEBUG, LogType.SZEIBER_CAP,
-                LogType.SPAMMY);
+        if(isRunning()) {
+            Entity shooter = e.getEntity();
 
-        Entity shooter = e.getEntity();
+            // Grant vision if necessary
+            if(ticksRemaining <= 0) {
+                Demand demand = new Demand(shooter, consumption);
+                MinecraftForge.EVENT_BUS.post(demand);
+                if(demand.isMet()) {
+                    Log.log("[RadEyesCap] ArchEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP,
+                            LogType.SPAMMY);
+                    ticksRemaining += 20;
+                }
+            }
 
-        // Grant vision if necessary
-        if(ticksRemaining <= 0 && this.storage >= this.consumption) {
-            Log.log("[RadEyesCap] ArchEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            this.storage -= this.consumption;
-            ticksRemaining += 20;
-        }
+            // Check whether vision should still be granted
+            if(ticksRemaining > 0) {
+                --ticksRemaining;
+                active = true;
+            }
+            else {
+                active = false;
+            }
 
-        // Restock energy if necessary
-        if(this.storage < this.consumption) {
-            Log.log("[RadEyesCap] Missing Energy, posting Event.", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            int missingEnergy = this.maxStorage - this.storage;
-            EnergyConsumptionEvent event = new EnergyConsumptionEvent(shooter, missingEnergy);
-            MinecraftForge.EVENT_BUS.post(event);
-            Log.log("[RadEyesCap] Event granted " + (missingEnergy - event.getRemainingAmount()) + " Energy.",
-                    LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            this.storage += (missingEnergy - event.getRemainingAmount());
-        }
-
-        // Check whether vision should still be granted
-        if(ticksRemaining > 0) {
-            --ticksRemaining;
-            Log.log("[RadEyesCap] Ticks Remaining!.", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            active = true;
-        }
-        else {
-            active = false;
-        }
-
-        // Set Vision accordingly
-        if(shooter.world.isRemote) {
-            for(Entity oneOfAll : shooter.getEntityWorld().getLoadedEntityList()) {
-                if(oneOfAll instanceof EntityLivingBase) {
-                    Log.log("[RadEyesCap] Found Living Entity of type: " + oneOfAll.getClass(), LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-                    oneOfAll.setGlowing(active);
+            // Set Vision accordingly
+            // TODO: This is mega inefficient
+            if(shooter.world.isRemote) {
+                for(Entity oneOfAll : shooter.getEntityWorld().getLoadedEntityList()) {
+                    if(oneOfAll instanceof EntityLivingBase) {
+                        ((EntityLivingBase) oneOfAll).setGlowing(active);
+                    }
                 }
             }
         }
-    }
-
-    @Override
-    public EnergyPriority currentConsumptionPrio() {
-        return EnergyPriority.FILL_ASAP;
-    }
-
-    @Override
-    public boolean canStillConsume() {
-        return storage < maxStorage;
-    }
-
-    @Override
-    public int consume() {
-        Log.log("[ArchEyesCap] ArchEyes attempting to consume energy!", LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_CAP, LogType.SPAMMY);
-        if(canStillConsume()) {
-            storage++;
-            Log.log("[ArchEyesCap] ArchEyes consuming energy! Now storing: " + storage, LogType.DEBUG,
-                    LogType.SZEIBER_ENERGY, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            return 1;
-        }
-        return 0;
     }
 
     @Override
@@ -131,19 +139,33 @@ public class RadarEyes implements ISzeibernaetick, IEnergyConsumer {
     }
 
     @Override
-    public int store(int amountToStore) {
-        int consumed = 0;
+    public ItemStack generateItemStack() {
+        ItemStack stack = new ItemStack(item);
+        return stack;
+    }
 
-        while(consume() != 0) {
-            consumed++;
+    public static class Item extends SzeibernaetickItem {
+        public Item() {
+            super(identifier);
         }
 
-        return consumed;
+        @Override
+        public BodyPart getBodyPart() {
+            return bodyPart;
+        }
+
+        @Override
+        public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+            RadarEyes cap = new RadarEyes();
+            if(nbt != null) {
+                cap.fromNBT(nbt);
+            }
+            return new SzeibernaetickCapabilityProvider(cap);
+        }
     }
 
     @Override
-    public int retrieve(int amountToRetrieve) {
-        return 0;
+    public String toNiceString() {
+        return "Radar Eyes";
     }
-
 }

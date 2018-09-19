@@ -5,6 +5,7 @@ import de.grzb.szeibernaeticks.control.Log;
 import de.grzb.szeibernaeticks.control.LogType;
 import de.grzb.szeibernaeticks.render.FakeRenderFactory;
 import de.grzb.szeibernaeticks.render.RenderBlockMarkerFactory;
+import de.grzb.szeibernaeticks.szeibernaeticks.control.SwitchControl;
 import de.grzb.szeibernaeticks.tileentity.TileEntityGuiContainerAssembler;
 import de.grzb.szeibernaeticks.szeibernaeticks.entity.EntityArrowFake;
 import de.grzb.szeibernaeticks.szeibernaeticks.entity.EntityBlockMarker;
@@ -37,7 +38,7 @@ public class ClientProxy extends CommonProxy {
 
         RenderingRegistry.registerEntityRenderingHandler(EntityArrowFake.class, new FakeRenderFactory());
         RenderingRegistry.registerEntityRenderingHandler(EntityBlockMarker.class, new RenderBlockMarkerFactory());
-
+        ClientRegistry.registerKeyBinding(SwitchControl.SzeiberHUDKey);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGuiContainerAssembler.class, new AnimationTESR<>());
     }
 

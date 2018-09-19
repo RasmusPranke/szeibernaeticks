@@ -1,26 +1,40 @@
 package de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
+import java.util.ArrayList;
+
+import de.grzb.szeibernaeticks.Szeibernaeticks;
 import de.grzb.szeibernaeticks.control.Log;
 import de.grzb.szeibernaeticks.control.LogType;
+import de.grzb.szeibernaeticks.item.SzeibernaetickItem;
 import de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyProductionEvent;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyProducer;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeiberClass;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
+import de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
+import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyEvent.Supply;
+import de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyUser;
+import de.grzb.szeibernaeticks.szeibernaeticks.handler.DynamoJointsHandler;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyProducer {
+@SzeiberClass(handler = { DynamoJointsHandler.class }, item = DynamoJoints.Item.class)
+public class DynamoJoints extends EnergyUserBase implements ISzeibernaetick, IEnergyUser {
+    @SzeiberClass.Identifier
+    public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
+            "DynamoJoints");
+    @SzeiberClass.ItemInject
+    public static final Item item = null;
+    private static final BodyPart bodyPart = BodyPart.JOINTS;
 
-    private int maxStorage = 100;
-    private int storage = 0;
     private float fractionalStorage = 0;
 
     @Override
-    public String getIdentifier() {
-        return "dynamoJoints";
+    public SzeibernaetickIdentifier getIdentifier() {
+        return identifier;
     }
 
     @Override
@@ -45,57 +59,7 @@ public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyPr
 
     @Override
     public BodyPart getBodyPart() {
-        return BodyPart.JOINTS;
-    }
-
-    // IEnergyConsumer Implementation
-
-    @Override
-    public EnergyPriority currentConsumptionPrio() {
-        return EnergyPriority.EMPTY_FAST;
-    }
-
-    @Override
-    public boolean canStillConsume() {
-        return this.storage < this.maxStorage;
-    }
-
-    @Override
-    public int consume() {
-        Log.log("[DynJointsCap] DynJoints attempting to consume energy!", LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_CAP, LogType.SPAMMY);
-        if(this.canStillConsume()) {
-            this.storage++;
-            Log.log("[DynJointsCap] DynJoints consuming energy! Now storing: " + this.storage, LogType.DEBUG,
-                    LogType.SZEIBER_ENERGY, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            return 1;
-        }
-        return 0;
-    }
-
-    // IEnergyProducer Implementation
-
-    @Override
-    public EnergyPriority currentProductionPriority() {
-        return EnergyPriority.EMPTY_FAST;
-    }
-
-    @Override
-    public boolean canStillProduce() {
-        return this.storage > 0;
-    }
-
-    @Override
-    public int produceAdHoc() {
-        Log.log("[DynJointsCap] DynJoints attempting to produce energy!", LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_CAP, LogType.SPAMMY);
-        if(this.canStillProduce()) {
-            this.storage--;
-            Log.log("[DynJointsCap] DynJoints produced energy! Remaining storage: " + this.storage, LogType.DEBUG,
-                    LogType.SZEIBER_ENERGY, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            return 1;
-        }
-        return 0;
+        return bodyPart;
     }
 
     /**
@@ -107,46 +71,54 @@ public class DynamoJoints implements ISzeibernaetick, IEnergyConsumer, IEnergyPr
      *            The entity this happened on
      * @return The amount of energy produced.
      */
-    public int produce(float height, Entity entity) {
-        Log.log("Maximum storage: " + maxStorage, LogType.TEMP);
+    public void produce(float height, Entity entity) {
         this.fractionalStorage += height / 4;
         int energyProduced = 0;
         if(this.fractionalStorage > 0) {
             energyProduced = (int) this.fractionalStorage;
+
+            Log.log("[DynJointsCap] Producing energy: " + energyProduced, LogType.DEBUG, LogType.SZEIBER_ENERGY,
+                    LogType.SZEIBER_CAP);
+            Supply supply = new Supply(entity, energyProduced);
+            MinecraftForge.EVENT_BUS.post(supply);
+
             this.fractionalStorage = this.fractionalStorage - energyProduced;
         }
-        Log.log("[DynJointsCap] Producing energy: " + energyProduced, LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_CAP);
-        EnergyProductionEvent production = new EnergyProductionEvent(entity, energyProduced);
-        MinecraftForge.EVENT_BUS.post(production);
-
-        return energyProduced;
     }
 
     @Override
-    public int getMaxEnergy() {
-        return maxStorage;
+    public Iterable<Switch> getSwitches() {
+        return new ArrayList<Switch>();
     }
 
     @Override
-    public int getCurrentEnergy() {
-        return storage;
+    public ItemStack generateItemStack() {
+        ItemStack stack = new ItemStack(item);
+        return stack;
     }
 
-    @Override
-    public int store(int amountToStore) {
-        int consumed = 0;
-
-        while(consume() != 0) {
-            consumed++;
+    public static class Item extends SzeibernaetickItem {
+        public Item() {
+            super(identifier);
         }
 
-        return consumed;
+        @Override
+        public BodyPart getBodyPart() {
+            return bodyPart;
+        }
+
+        @Override
+        public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+            DynamoJoints cap = new DynamoJoints();
+            if(nbt != null) {
+                cap.fromNBT(nbt);
+            }
+            return new SzeibernaetickCapabilityProvider(cap);
+        }
     }
 
     @Override
-    public int retrieve(int amountToRetrieve) {
-        return 0;
+    public String toNiceString() {
+        return "Dynamo Joints";
     }
-
 }

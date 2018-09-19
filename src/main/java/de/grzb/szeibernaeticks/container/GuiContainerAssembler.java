@@ -45,13 +45,13 @@ public class GuiContainerAssembler extends GuiContainerBase {
                 boolean installed = false;
                 for(ISzeibernaetick playerSzeibernaetick : playerSzeibernaeticks) {
                     if(playerSzeibernaetick.equals(szeibernaetick)) {
-                        // player didn't modify this slot; reattach the player's Szeibernaetick, NOT a new one
+                        // player didn't modify this slot; reattach the player's SzeiberClass, NOT a new one
                         playerCapability.addSzeibernaetick(playerSzeibernaetick);
                         installed = true;
                         break;
                     }
                 }
-                // player doesn't have this Szeibernaetick yet, attach it
+                // player doesn't have this SzeiberClass yet, attach it
                 if(!installed) playerCapability.addSzeibernaetick(szeibernaetick);
             }
         }

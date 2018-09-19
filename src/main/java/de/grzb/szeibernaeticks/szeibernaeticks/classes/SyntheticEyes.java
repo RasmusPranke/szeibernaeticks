@@ -1,29 +1,68 @@
 package de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
+import java.util.ArrayList;
+
+import de.grzb.szeibernaeticks.Szeibernaeticks;
 import de.grzb.szeibernaeticks.control.Log;
 import de.grzb.szeibernaeticks.control.LogType;
+import de.grzb.szeibernaeticks.item.SzeibernaetickItem;
 import de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeiberClass;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
+import de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
+import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyEvent.Demand;
+import de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyUser;
+import de.grzb.szeibernaeticks.szeibernaeticks.handler.SyntheticEyesHandler;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class SyntheticEyes implements ISzeibernaetick, IEnergyConsumer {
-
-    private int maxStorage = 20;
-    private int storage = 0;
+@SzeiberClass(handler = { SyntheticEyesHandler.class }, item = SyntheticEyes.Item.class)
+public class SyntheticEyes extends EnergyUserBase implements ISzeibernaetick, IEnergyUser {
+    @SzeiberClass.Identifier
+    public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
+            "SynthEyes");
+    @SzeiberClass.ItemInject
+    public static final Item item = null;
+    private static final BodyPart bodyPart = BodyPart.EYES;
     private int consumption = 5;
+
+    private boolean isRunning() {
+        return onOff.getValue();
+    };
+
+    private class OnOffSwitch extends Switch.BooleanSwitch {
+        public OnOffSwitch(ISzeibernaetick sourceSzeiber, String name) {
+            super(sourceSzeiber, name);
+        }
+
+        @Override
+        public boolean isActive() {
+            return true;
+        }
+
+    }
+
+    private OnOffSwitch onOff = new OnOffSwitch(this, "OnOff");
+
+    @Override
+    public Iterable<Switch> getSwitches() {
+        ArrayList<Switch> list = new ArrayList<Switch>();
+        list.add(onOff);
+        return list;
+    }
 
     {
         Log.log("Creating instance of " + this.getClass(), LogType.SZEIBER_CAP, LogType.DEBUG, LogType.INSTANTIATION);
     }
 
     @Override
-    public String getIdentifier() {
-        return "synthEyes";
+    public SzeibernaetickIdentifier getIdentifier() {
+        return identifier;
     }
 
     @Override
@@ -44,55 +83,20 @@ public class SyntheticEyes implements ISzeibernaetick, IEnergyConsumer {
 
     @Override
     public BodyPart getBodyPart() {
-        return BodyPart.EYES;
+        return bodyPart;
     }
 
     public boolean grantVision(Entity target) {
-        Log.log("[SynthEyesCap] SynthEyes attempting to grant vision!", LogType.DEBUG, LogType.SZEIBER_CAP,
-                LogType.SPAMMY);
-        boolean granted = false;
-
-        if(this.storage >= this.consumption) {
-            Log.log("[SynthEyesCap] SynthEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            this.storage -= this.consumption;
-            granted = true;
+        if(isRunning()) {
+            boolean granted = false;
+            Demand demand = new Demand(target, consumption);
+            MinecraftForge.EVENT_BUS.post(demand);
+            if(demand.isMet()) {
+                granted = true;
+            }
+            return granted;
         }
-
-        if(this.storage < this.consumption) {
-            Log.log("[SynthEyesCap] SynthEyes missing Energy, posting Event.", LogType.DEBUG, LogType.SZEIBER_CAP,
-                    LogType.SPAMMY);
-            int missingEnergy = this.maxStorage - this.storage;
-            EnergyConsumptionEvent event = new EnergyConsumptionEvent(target, missingEnergy);
-            MinecraftForge.EVENT_BUS.post(event);
-            Log.log("[SynthEyesCap] Event granted " + (missingEnergy - event.getRemainingAmount()) + " Energy.",
-                    LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            this.storage += (missingEnergy - event.getRemainingAmount());
-        }
-
-        return granted;
-    }
-
-    @Override
-    public EnergyPriority currentConsumptionPrio() {
-        return EnergyPriority.FILL_ASAP;
-    }
-
-    @Override
-    public boolean canStillConsume() {
-        return this.storage < this.maxStorage;
-    }
-
-    @Override
-    public int consume() {
-        Log.log("[SynthEyesCap] SynthEyes attempting to consume energy!", LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_CAP, LogType.SPAMMY);
-        if(this.canStillConsume()) {
-            this.storage++;
-            Log.log("[SynthEyesCap] SynthEyes consuming energy! Now storing: " + this.storage, LogType.DEBUG,
-                    LogType.SZEIBER_ENERGY, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            return 1;
-        }
-        return 0;
+        return false;
     }
 
     @Override
@@ -106,20 +110,33 @@ public class SyntheticEyes implements ISzeibernaetick, IEnergyConsumer {
     }
 
     @Override
-    public int store(int amountToStore) {
-        int consumed = 0;
+    public ItemStack generateItemStack() {
+        ItemStack stack = new ItemStack(item);
+        return stack;
+    }
 
-        while(consume() != 0) {
-            consumed++;
+    public static class Item extends SzeibernaetickItem {
+        public Item() {
+            super(identifier);
         }
 
-        return consumed;
+        @Override
+        public BodyPart getBodyPart() {
+            return bodyPart;
+        }
+
+        @Override
+        public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+            SyntheticEyes cap = new SyntheticEyes();
+            if(nbt != null) {
+                cap.fromNBT(nbt);
+            }
+            return new SzeibernaetickCapabilityProvider(cap);
+        }
     }
 
     @Override
-    public int retrieve(int amountToRetrieve) {
-
-        return 0;
+    public String toNiceString() {
+        return "Synthetic Eyes";
     }
-
 }

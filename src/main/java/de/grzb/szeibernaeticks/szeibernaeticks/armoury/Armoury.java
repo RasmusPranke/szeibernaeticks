@@ -16,11 +16,11 @@ public class Armoury implements IArmoury {
 
     private Entity entityAttachedTo;
     protected ConcurrentHashMap<BodyPart, ISzeibernaetick> bodyMap;
-    protected ConcurrentHashMap<Class<? extends ISzeibernaetick>, ISzeibernaetick> itemMap;
+    protected ConcurrentHashMap<Class<? extends ISzeibernaetick>, ISzeibernaetick> classMap;
 
     public Armoury() {
         this.bodyMap = new ConcurrentHashMap<>();
-        this.itemMap = new ConcurrentHashMap<>();
+        this.classMap = new ConcurrentHashMap<>();
     }
 
     public Armoury(Entity entity) {
@@ -38,10 +38,10 @@ public class Armoury implements IArmoury {
 
         if(this.bodyMap.get(szeiber.getBodyPart()) == null) {
             Log.log("Body Part is not used.", LogType.DEBUG, LogType.SZEIBER_ARM, LogType.SPECIFIC);
-            // Tell anyone interested that you are installing a Szeibernaetick
+            // Tell anyone interested that you are installing a SzeiberClass
             MinecraftForge.EVENT_BUS.post(new SzeibernaetickInstalledEvent(this, szeiber));
             this.bodyMap.put(szeiber.getBodyPart(), szeiber);
-            this.itemMap.put(szeiber.getClass(), szeiber);
+            this.classMap.put(szeiber.getClass(), szeiber);
             return true;
         }
         return false;
@@ -49,7 +49,7 @@ public class Armoury implements IArmoury {
 
     @Override
     public ISzeibernaetick getSzeibernaetick(Class<? extends ISzeibernaetick> szeiberClass) {
-        return this.itemMap.get(szeiberClass);
+        return this.classMap.get(szeiberClass);
     }
 
     @Override
@@ -60,9 +60,9 @@ public class Armoury implements IArmoury {
     @Override
     public ISzeibernaetick removeSzeibernaetick(ISzeibernaetick szeiber) {
         Class<? extends ISzeibernaetick> szeibernaetickClass = szeiber.getClass();
-        if(this.itemMap.get(szeibernaetickClass) != null) {
+        if(this.classMap.get(szeibernaetickClass) != null) {
             MinecraftForge.EVENT_BUS.post(new SzeibernaetickRemovedEvent(this, szeiber));
-            this.itemMap.remove(szeibernaetickClass);
+            this.classMap.remove(szeibernaetickClass);
             this.bodyMap.remove(szeiber.getBodyPart());
             return szeiber;
         }

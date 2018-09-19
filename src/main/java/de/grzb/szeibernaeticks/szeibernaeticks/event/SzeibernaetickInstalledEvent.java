@@ -15,7 +15,7 @@ public class SzeibernaetickInstalledEvent extends Event {
         this.armoury = armoury;
         this.installedSzeibernaetick = installedSzeibernaetick;
 
-        Log.log("Installed Szeibernaetick: " + installedSzeibernaetick.getIdentifier(), LogType.INFO);
+        Log.log("Installed SzeiberClass: " + installedSzeibernaetick.getIdentifier(), LogType.INFO);
     }
 
 }

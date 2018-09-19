@@ -1,27 +1,69 @@
 package de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
+import java.util.ArrayList;
+
+import de.grzb.szeibernaeticks.Szeibernaeticks;
+import de.grzb.szeibernaeticks.item.SzeibernaetickItem;
 import de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeiberClass;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
+import de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
+import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyEvent.Demand;
+import de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyUser;
+import de.grzb.szeibernaeticks.szeibernaeticks.handler.RunnersLegsHandler;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class RunnersLegs implements ISzeibernaetick, IEnergyConsumer {
-
+@SzeiberClass(handler = { RunnersLegsHandler.class }, item = RunnersLegs.Item.class)
+public class RunnersLegs extends EnergyUserBase implements ISzeibernaetick, IEnergyUser {
+    @SzeiberClass.Identifier
+    public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
+            "RunnersLegs");
+    @SzeiberClass.ItemInject
+    public static final Item item = null;
+    private static final BodyPart bodyPart = BodyPart.LEGS;
     private int maxStorage = 20;
     private int storage = 0;
     private int consumption = 5;
 
+    private boolean running() {
+        return onOff.getValue();
+    };
+
+    private class OnOffSwitch extends Switch.BooleanSwitch {
+        public OnOffSwitch(ISzeibernaetick sourceSzeiber, String name) {
+            super(sourceSzeiber, name);
+        }
+
+        @Override
+        public boolean isActive() {
+            return true;
+        }
+
+    }
+
+    private OnOffSwitch onOff = new OnOffSwitch(this, "OnOff");
+
     @Override
-    public String getIdentifier() {
-        return "runnersLegs";
+    public Iterable<Switch> getSwitches() {
+        ArrayList<Switch> list = new ArrayList<Switch>();
+        list.add(onOff);
+        return list;
+    }
+
+    @Override
+    public SzeibernaetickIdentifier getIdentifier() {
+        return identifier;
     }
 
     @Override
     public NBTTagCompound toNBT() {
+        // TODO: Make sure all states are saved in NBT in every szeibernaetick
         NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger("storage", this.storage);
         tag.setInteger("maxStorage", this.maxStorage);
@@ -38,44 +80,17 @@ public class RunnersLegs implements ISzeibernaetick, IEnergyConsumer {
 
     @Override
     public BodyPart getBodyPart() {
-        return BodyPart.LEGS;
+        return bodyPart;
     }
 
     public boolean grantSpeed(Entity target) {
         boolean granted = false;
-
-        if(this.storage >= this.consumption) {
-            this.storage -= this.consumption;
+        Demand demand = new Demand(target, consumption);
+        MinecraftForge.EVENT_BUS.post(demand);
+        if(demand.isMet()) {
             granted = true;
         }
-
-        if(this.storage < this.consumption) {
-            int missingEnergy = this.maxStorage - this.storage;
-            EnergyConsumptionEvent event = new EnergyConsumptionEvent(target, missingEnergy);
-            MinecraftForge.EVENT_BUS.post(event);
-            this.storage += (missingEnergy - event.getRemainingAmount());
-        }
-
         return granted;
-    }
-
-    @Override
-    public EnergyPriority currentConsumptionPrio() {
-        return EnergyPriority.FILL_ASAP;
-    }
-
-    @Override
-    public boolean canStillConsume() {
-        return this.storage < this.maxStorage;
-    }
-
-    @Override
-    public int consume() {
-        if(this.canStillConsume()) {
-            this.storage++;
-            return 1;
-        }
-        return 0;
     }
 
     @Override
@@ -89,20 +104,33 @@ public class RunnersLegs implements ISzeibernaetick, IEnergyConsumer {
     }
 
     @Override
-    public int store(int amountToStore) {
-        int consumed = 0;
+    public ItemStack generateItemStack() {
+        ItemStack stack = new ItemStack(item);
+        return stack;
+    }
 
-        while(consume() != 0) {
-            consumed++;
+    public static class Item extends SzeibernaetickItem {
+        public Item() {
+            super(identifier);
         }
 
-        return consumed;
+        @Override
+        public BodyPart getBodyPart() {
+            return bodyPart;
+        }
+
+        @Override
+        public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+            RunnersLegs cap = new RunnersLegs();
+            if(nbt != null) {
+                cap.fromNBT(nbt);
+            }
+            return new SzeibernaetickCapabilityProvider(cap);
+        }
     }
 
     @Override
-    public int retrieve(int amountToRetrieve) {
-
-        return 0;
+    public String toNiceString() {
+        return "Runners Legs";
     }
-
 }

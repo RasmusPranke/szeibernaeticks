@@ -4,21 +4,25 @@ public enum EnergyPriority {
     /**
      *
      */
-    FILL_ASAP(2), /**
+    FREE(2),
+    /**
      *
      */
-    FILL_FAST(1), /**
+    BODILY_HARM(1),
+    /**
      *
      */
-    DONT_CARE(0), /**
+    REPLENISHABLE_RESOURCE(0),
+    /**
      *
      */
-    EMPTY_FAST(-1), /**
+    DEPLETABLE_RESOURCE(-1),
+    /**
      *
      */
-    EMPTY_ASAP(-2);
+    STIRCTLY_LIMITED_RESOURCE(-2);
 
-    private int priority;
+    public final int priority;
 
     EnergyPriority(int priority) {
         this.priority = priority;

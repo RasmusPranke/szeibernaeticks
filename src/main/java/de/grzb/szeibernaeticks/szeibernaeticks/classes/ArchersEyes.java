@@ -1,33 +1,55 @@
 package de.grzb.szeibernaeticks.szeibernaeticks.classes;
 
+import java.util.ArrayList;
+
+import de.grzb.szeibernaeticks.Szeibernaeticks;
 import de.grzb.szeibernaeticks.control.Log;
 import de.grzb.szeibernaeticks.control.LogType;
+import de.grzb.szeibernaeticks.item.SzeibernaetickItem;
 import de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyConsumptionEvent;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyPriority;
-import de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyConsumer;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeiberClass;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityProvider;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickIdentifier;
+import de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
+import de.grzb.szeibernaeticks.szeibernaeticks.energy.EnergyEvent.Demand;
+import de.grzb.szeibernaeticks.szeibernaeticks.energy.IEnergyUser;
 import de.grzb.szeibernaeticks.szeibernaeticks.entity.EntityArrowFake;
+import de.grzb.szeibernaeticks.szeibernaeticks.handler.ArchersEyesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent.Tick;
 
-public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
-    private int maxStorage = 20;
-    private int storage = 0;
+@SzeiberClass(handler = { ArchersEyesHandler.class, }, item = ArchersEyes.Item.class)
+public class ArchersEyes extends EnergyUserBase implements ISzeibernaetick, IEnergyUser {
+    @SzeiberClass.Identifier
+    public static final SzeibernaetickIdentifier identifier = new SzeibernaetickIdentifier(Szeibernaeticks.MOD_ID,
+            "ArchEyes");
+    @SzeiberClass.ItemInject
+    public static final SzeibernaetickItem item = null;
+
+    private static final BodyPart bodyPart = BodyPart.EYES;
     private int consumption = 1;
     private int ticksRemaining = 0;
+    private boolean running = true;
+
+    @Override
+    public Iterable<Switch> getSwitches() {
+        ArrayList<Switch> list = new ArrayList<Switch>();
+        return list;
+    }
 
     {
         Log.log("Creating instance of " + this.getClass(), LogType.SZEIBER_CAP, LogType.DEBUG, LogType.INSTANTIATION);
     }
 
     @Override
-    public String getIdentifier() {
-        return "ArchEyes";
+    public SzeibernaetickIdentifier getIdentifier() {
+        return identifier;
     }
 
     @Override
@@ -36,6 +58,7 @@ public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
         tag.setInteger("storage", storage);
         tag.setInteger("maxStorage", maxStorage);
         tag.setInteger("ticksRemaining", ticksRemaining);
+        // tag.setBoolean("running", running);
         return tag;
     }
 
@@ -46,111 +69,83 @@ public class ArchersEyes implements ISzeibernaetick, IEnergyConsumer {
             maxStorage = nbt.getInteger("maxStorage");
         }
         ticksRemaining = nbt.getInteger("ticksRemaining");
+        running = nbt.getBoolean("running");
     }
 
     @Override
     public BodyPart getBodyPart() {
-        return BodyPart.EYES;
+        return bodyPart;
     }
 
     public void grantVision(Tick e) {
-        Log.log("[ArchEyesCap] ArchEyes attempting to grant vision!", LogType.DEBUG, LogType.SZEIBER_CAP,
-                LogType.SPAMMY);
+        if(running) {
+            Entity shooter = e.getEntity();
 
-        Entity shooter = e.getEntity();
-
-        // Grant vision if necessary
-        if(ticksRemaining <= 0 && this.storage >= this.consumption) {
-            Log.log("[ArchEyesCap] ArchEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            this.storage -= this.consumption;
-            ticksRemaining += 20;
-        }
-
-        // Restock energy if necessary
-        if(this.storage < this.consumption) {
-            Log.log("[ArchEyesCap] ArchEyes missing Energy, posting Event.", LogType.DEBUG, LogType.SZEIBER_CAP,
-                    LogType.SPAMMY);
-            int missingEnergy = this.maxStorage - this.storage;
-            EnergyConsumptionEvent event = new EnergyConsumptionEvent(shooter, missingEnergy);
-            MinecraftForge.EVENT_BUS.post(event);
-            Log.log("[ArchEyesCap] Event granted " + (missingEnergy - event.getRemainingAmount()) + " Energy.",
-                    LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            this.storage += (missingEnergy - event.getRemainingAmount());
-        }
-
-        // Grant vision if it is activated
-        if(ticksRemaining > 0) {
-            --ticksRemaining;
-
-            if(shooter.world.isRemote) {
-                Log.log("[ArchEyesCap] Attempting to spawn fake arrow!.", LogType.DEBUG, LogType.SZEIBER_CAP,
-                        LogType.SPAMMY);
-                ItemStack itemstack = e.getItem();
-                ItemBow bow = (ItemBow) itemstack.getItem();
-
-                // Calculate the current force of the bow
-                int charge = bow.getMaxItemUseDuration(itemstack) - e.getDuration();
-                float force = charge / 20.0F;
-                force = (force * force + force * 2.0F) / 3.0F;
-
-                if(force > 1.0F) {
-                    force = 1.0F;
+            // Grant vision if necessary
+            if(ticksRemaining <= 0) {
+                Log.log("[ArchEyesCap] ArchEyes granting Vision!", LogType.DEBUG, LogType.SZEIBER_CAP, LogType.SPAMMY);
+                Demand demand = new Demand(shooter, consumption);
+                MinecraftForge.EVENT_BUS.post(demand);
+                if(demand.isMet()) {
+                    ticksRemaining += 20;
                 }
+            }
 
-                EntityArrowFake entityarrow = new EntityArrowFake(e.getEntity().world, e.getEntityLiving());
-                entityarrow.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, force * 3.0F, 1.0F);
-                e.getEntity().world.spawnEntity(entityarrow);
+            // Grant vision if it is activated
+            if(ticksRemaining > 0) {
+                --ticksRemaining;
+
+                if(shooter.world.isRemote) {
+                    Log.log("[ArchEyesCap] Attempting to spawn fake arrow!.", LogType.DEBUG, LogType.SZEIBER_CAP,
+                            LogType.SPAMMY);
+                    ItemStack itemstack = e.getItem();
+                    ItemBow bow = (ItemBow) itemstack.getItem();
+
+                    // Calculate the current force of the bow
+                    int charge = bow.getMaxItemUseDuration(itemstack) - e.getDuration();
+                    float force = charge / 20.0F;
+                    force = (force * force + force * 2.0F) / 3.0F;
+
+                    if(force > 1.0F) {
+                        force = 1.0F;
+                    }
+
+                    EntityArrowFake entityarrow = new EntityArrowFake(e.getEntity().world, e.getEntityLiving());
+                    entityarrow.shoot(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, force * 3.0F, 1.0F);
+                    e.getEntity().world.spawnEntity(entityarrow);
+                }
             }
         }
     }
 
     @Override
-    public EnergyPriority currentConsumptionPrio() {
-        return EnergyPriority.FILL_ASAP;
+    public ItemStack generateItemStack() {
+        ItemStack stack = new ItemStack(item);
+        return stack;
     }
 
-    @Override
-    public boolean canStillConsume() {
-        return storage < maxStorage;
-    }
-
-    @Override
-    public int consume() {
-        Log.log("[ArchEyesCap] ArchEyes attempting to consume energy!", LogType.DEBUG, LogType.SZEIBER_ENERGY,
-                LogType.SZEIBER_CAP, LogType.SPAMMY);
-        if(canStillConsume()) {
-            storage++;
-            Log.log("[ArchEyesCap] ArchEyes consuming energy! Now storing: " + storage, LogType.DEBUG,
-                    LogType.SZEIBER_ENERGY, LogType.SZEIBER_CAP, LogType.SPAMMY);
-            return 1;
-        }
-        return 0;
-    }
-
-    @Override
-    public int getMaxEnergy() {
-        return maxStorage;
-    }
-
-    @Override
-    public int getCurrentEnergy() {
-        return storage;
-    }
-
-    @Override
-    public int store(int amountToStore) {
-        int consumed = 0;
-
-        while(consume() != 0) {
-            consumed++;
+    public static class Item extends SzeibernaetickItem {
+        public Item() {
+            super(identifier);
         }
 
-        return consumed;
+        @Override
+        public BodyPart getBodyPart() {
+            return bodyPart;
+        }
+
+        @Override
+        public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+            ArchersEyes cap = new ArchersEyes();
+            if(nbt != null) {
+                cap.fromNBT(nbt);
+            }
+            return new SzeibernaetickCapabilityProvider(cap);
+        }
     }
 
     @Override
-    public int retrieve(int amountToRetrieve) {
-        return 0;
+    public String toNiceString() {
+        return "Archers Eyes";
     }
-
 }

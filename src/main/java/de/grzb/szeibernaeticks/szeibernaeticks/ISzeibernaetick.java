@@ -1,38 +1,28 @@
 package de.grzb.szeibernaeticks.szeibernaeticks;
 
+import de.grzb.szeibernaeticks.szeibernaeticks.control.Switch;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
+//TODO: Add option to enable/disable certain cybernetics.
+//TODO: Add alternate quickbar for this. RenderGameOverlayEvent!
+
 /**
- * Stores and retrieves the data behind a Szeibernaetick.
+ * Stores and retrieves the data behind a SzeiberClass.
  *
  *
- * Structure of an NBTTag containing a Szeibernaeticks Tag:
- * {
- *     OtherTag : Value,
- *     "Szeibernaeticks" : {
- *         Unlocalized Name : {
- *             "Properties" : {
- *                 "damage" : The damage value,
- *                 Item Specific Properties : Their value
- *             }
- *         }
- *     },
- *     AnotherTag : Value
- * }
+ * Structure of an NBTTag containing a Szeibernaeticks Tag: { OtherTag : Value,
+ * "Szeibernaeticks" : { Unlocalized Name : { "Properties" : { "damage" : The
+ * damage value, Item Specific Properties : Their value } } }, AnotherTag :
+ * Value }
  *
- * When passing this between methods/objects, the "Szeibernaeticks" Compound Tag is the base tag:
- * {
- *     Unlocalized Name : {
- *         "Properties" : {
- *             "damage" : The damage value,
- *             Item Specific Properties : Their value
- *         }
- *     }
- * }
+ * When passing this between methods/objects, the "Szeibernaeticks" Compound Tag
+ * is the base tag: { Unlocalized Name : { "Properties" : { "damage" : The
+ * damage value, Item Specific Properties : Their value } } }
  *
- * Naming convention:
- * Compound Tags are written in PascalCase : "Properties", "ThisIsAdvancedStuff"
- * Primitive Tags are written in camelCase : "damage", "advancedValue"
+ * Naming convention: Compound Tags are written in PascalCase : "Properties",
+ * "ThisIsAdvancedStuff" Primitive Tags are written in camelCase : "damage",
+ * "advancedValue"
  *
  *
  * @author DemRat
@@ -46,7 +36,7 @@ public interface ISzeibernaetick {
      *
      * @return An unique Identifier.
      */
-    String getIdentifier();
+    SzeibernaetickIdentifier getIdentifier();
 
     /**
      * Stores this Capability as a NBTTagCompound.
@@ -68,4 +58,26 @@ public interface ISzeibernaetick {
      * @return
      */
     BodyPart getBodyPart();
+
+    /**
+     * Returns a list of Switches representing all the ways the SzeiberClass can
+     * be adjusted ad-hoc.
+     * 
+     * @return
+     */
+    Iterable<Switch> getSwitches();
+
+    /**
+     * Generates an ItemStack which has this Capability.
+     * 
+     * @return
+     */
+    ItemStack generateItemStack();
+
+    /**
+     * Returns a human-friendly string name for this Szeibernaetick.
+     * 
+     * @return
+     */
+    String toNiceString();
 }

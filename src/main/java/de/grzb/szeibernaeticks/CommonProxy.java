@@ -10,22 +10,26 @@ import de.grzb.szeibernaeticks.networking.GuiMessage;
 import de.grzb.szeibernaeticks.networking.NetworkWrapper;
 import de.grzb.szeibernaeticks.networking.SzeiberCapMessage;
 import de.grzb.szeibernaeticks.potion.ModPotions;
-import de.grzb.szeibernaeticks.tileentity.ModTileEntities;
-import de.grzb.szeibernaeticks.world.ModWorldGenerator;
-import de.grzb.szeibernaeticks.szeibernaeticks.ArmouryAttacher;
-import de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityStorage;
 import de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
+import de.grzb.szeibernaeticks.szeibernaeticks.InvalidSzeibernaetickException;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickCapabilityStorage;
+import de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickInit;
 import de.grzb.szeibernaeticks.szeibernaeticks.armoury.Armoury;
+import de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryAttacher;
 import de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryStorage;
 import de.grzb.szeibernaeticks.szeibernaeticks.armoury.IArmoury;
 import de.grzb.szeibernaeticks.szeibernaeticks.classes.DummyDefault;
+import de.grzb.szeibernaeticks.szeibernaeticks.control.SwitchControl;
 import de.grzb.szeibernaeticks.szeibernaeticks.entity.EntityBlockMarker;
 import de.grzb.szeibernaeticks.szeibernaeticks.overlay.EnergyOverlay;
+import de.grzb.szeibernaeticks.tileentity.ModTileEntities;
+import de.grzb.szeibernaeticks.world.ModWorldGenerator;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.animation.ITimeValue;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.fml.common.LoaderExceptionModCrash;
 import net.minecraftforge.common.model.animation.IAnimationStateMachine;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -52,6 +56,12 @@ public class CommonProxy {
         Log.log("PreInit!", LogType.SETUP, LogType.INFO);
         ModItems.init();
         ModBlocks.init();
+        try {
+            SzeibernaetickInit.init();
+        }
+        catch(InvalidSzeibernaetickException invalidSzeiberException) {
+            throw new LoaderExceptionModCrash("Error while initializing Szeibernaeticks!", invalidSzeiberException);
+        }
         ModTileEntities.init();
         ModPotions.init();
 
@@ -76,6 +86,7 @@ public class CommonProxy {
 
     public void postInit(FMLPostInitializationEvent e) {
         MinecraftForge.EVENT_BUS.register(new EnergyOverlay());
+        MinecraftForge.EVENT_BUS.register(new SwitchControl());
     }
 
     public void registerItemRenderer(Item item, int meta, String id) {

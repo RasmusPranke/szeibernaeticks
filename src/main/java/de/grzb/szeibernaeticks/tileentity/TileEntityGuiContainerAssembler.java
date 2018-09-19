@@ -1,8 +1,10 @@
 package de.grzb.szeibernaeticks.tileentity;
 
+import java.util.Collection;
+
 import com.google.common.collect.ImmutableMap;
-import io.netty.util.internal.ConcurrentSet;
 import de.grzb.szeibernaeticks.Szeibernaeticks;
+import io.netty.util.internal.ConcurrentSet;
 import de.grzb.szeibernaeticks.client.gui.GuiId;
 import de.grzb.szeibernaeticks.container.GuiContainerAssembler;
 import de.grzb.szeibernaeticks.container.GuiContainerBase;
@@ -11,7 +13,6 @@ import de.grzb.szeibernaeticks.container.layout.SlotBodyPartDefinition;
 import de.grzb.szeibernaeticks.container.slot.SlotType;
 import de.grzb.szeibernaeticks.szeibernaeticks.BodyPart;
 import de.grzb.szeibernaeticks.szeibernaeticks.ISzeibernaetick;
-import de.grzb.szeibernaeticks.szeibernaeticks.SzeibernaetickMapper;
 import de.grzb.szeibernaeticks.szeibernaeticks.armoury.ArmouryProvider;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -67,7 +68,7 @@ public class TileEntityGuiContainerAssembler extends TileEntityGuiContainerBase 
             ItemStack itemStack = ItemStack.EMPTY;
             for(ISzeibernaetick capability : szeibernaeticks) {
                 if(bodyPart.equals(capability.getBodyPart())) {
-                    itemStack = new ItemStack(SzeibernaetickMapper.instance.getItemFromIdentifier(capability.getIdentifier()));
+                    itemStack = capability.generateItemStack();
                 }
             }
 
